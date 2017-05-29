@@ -11,7 +11,7 @@ for file in files:
     text = process(file).decode()
     txt = io.StringIO(text)
     lines = txt.readlines()
-    question_indices = [index for index, question in enumerate(lines) if re.search('((<Q)|(Q\\n))|(Question[:-])', question)]
+    question_indices = [index for index, question in enumerate(lines) if re.search('((<Q)|(^Q\\n))|(Question[:-])', question)]
     answer_indices = [index for index, answer in enumerate(lines) if re.search('((<A)|(A\\n))|(Answer[:-])', answer)]
     question_answer_indices = question_indices + answer_indices
     question_answer_indices.sort(key=int)
