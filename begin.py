@@ -5,13 +5,13 @@ import io
 import re
 import glob
 
-files = glob.glob('Test/Apple.pdf')
+files = glob.glob('Test/Amazon11.pdf')
 file_count = 0
 for file in files:
     text = process(file).decode()
     txt = io.StringIO(text)
     lines = txt.readlines()
-    copyright_index = [index for index, item in enumerate(lines) if re.search('1-877', item)]
+    copyright_index = [index for index, item in enumerate(lines) if re.search('1 ? ? ?- ? 8 ?7 ?7 ?', item)]
     print("copyright_index", copyright_index)
     copyright_slice_list = list()
     for x in range(0, len(copyright_index)):
