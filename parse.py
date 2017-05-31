@@ -6,7 +6,7 @@ import re
 import glob
 
 # Find all the .pdf files
-files = glob.glob('AAPL/*.pdf')
+files = glob.glob('Samsung/*.pdf')
 
 for file in files:
     # Convert the text file from pdf and transform it into an iterable list
@@ -27,8 +27,8 @@ for file in files:
     # service marked each question in these files with a capital Q and a new 
     # line.
     if "Q\n" in question_and_answer_section:
-        # Find the dots that separate each question/answer block in the pdf and 
-        # remove them
+        # Find the dots that separate each question/answer block in the file
+        # and remove them
         ellipsis_indices = [index for index, ellipsis in enumerate(
             question_and_answer_section) if re.search('.\.\.\.\.\.\.\.\.\.\.+', 
             ellipsis)]
@@ -44,7 +44,7 @@ for file in files:
         for index in sorted(copyright_indices, reverse=True):
             del question_and_answer_section[index]
 
-        # Find where each question and answer begin in what remains of the 
+        # Find where each question and answer begins in what remains of the 
         # document
         question_indices = [index-3 for index, question in enumerate(
             question_and_answer_section) if question == "Q\n"]
