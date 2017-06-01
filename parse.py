@@ -4,9 +4,10 @@ from textract import process
 import io
 import re
 import glob
+import sqlite3
 
 # Find all the .pdf files
-files = glob.glob('Samsung/*.pdf')
+files = glob.glob('AAPL/*.pdf')
 
 for file in files:
     # Convert the text file from pdf and transform it into an iterable list
@@ -52,7 +53,12 @@ for file in files:
             question_and_answer_section) if answer == 'A\n']
         question_answer_indices = question_indices + answer_indices
         question_answer_indices.sort(key=int)
+        
+        # Loop through the question and answer section to grab the questions, 
+        # answers, and conversation partners. Put them in a list.
         question_answer_list = []
+        question_list = []
+        answer_list = []
         for index, value in enumerate(question_answer_indices):
             try:
                 question_answer = question_and_answer_section[
@@ -61,9 +67,29 @@ for file in files:
             except IndexError:
                 question_answer = question_and_answer_section[
                 question_answer_indices[index]:]
+            if re.search(r'Q\\n', str(question_answer)):
+                question_list.append(question_answer)
+                print("question_answer[0]", type(question_answer[0]))
+                print("question_answer[1]", type(question_answer[1]))
+                print("question_answer[5:]", type(question_answer[5:]))
+                question = ''.join(question_answer[5:]).replace('\n', '')
+                print("question", type(question))
+                with sqlite3.connect('db.sqlite3') as conn:
+                    c = conn.cursor()
+                    c.execute('''INSERT INTO ANSWER VALUES(NULL, ?, ?, ?, ?)''', 
+                        (question_answer[0], question_answer[1], 
+                        question, '2017-05-31'))
+            else:
+                answer_list.append(question_answer)
+        with open('question.txt', 'a+') as write_file:
+            write_file.write(str(question_list))
+        with open('answer.txt', 'a+') as write_file:
+            write_file.write(str(answer_list))
+
+            print("question_answer", question_answer)
             question_answer_list.append(question_answer)
-        with open("One.txt", "a+") as write_file:
-            write_file.write(str(question_answer_list))
+        # with open("One.txt", "a+") as write_file:
+        #     write_file.write(str(question_answer_list))
 
     # Work with files from Q1 2005 through Q2 2011 as available. The transcript
     # service marked each question in these files with an angle bracket and a 
