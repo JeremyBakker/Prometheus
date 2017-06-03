@@ -15,6 +15,7 @@ for file in files:
     text = process(file).decode()
     txt = io.StringIO(text)
     lines = txt.readlines()
+    # print(lines)
     
     # Grab the transcript date from the file name for the database entry below.
     transcript_date = str(file[-13:-4])
@@ -22,15 +23,15 @@ for file in files:
     # Find where the QUESTION AND ANSWER SECTION begins and ends, then slice it
     # out.
     question_and_answer_section_index = [index for index, item in enumerate(
-        lines) if re.search('Q ?UESTION ?-?AND ?-?ANSWER ?-?SECTION\\n', item)]
+        lines) if re.search('Q ?U ?ESTION ?-?AND ?-?ANSWER ?-?SECTION\\n', item)]
     disclaimer_index = [index for index, item in enumerate(lines) if re.search(
         'Disclaimer', item)]
-    try:
-        question_and_answer_section = lines[question_and_answer_section_index[0]:
+    # try:
+    question_and_answer_section = lines[question_and_answer_section_index[0]:
             disclaimer_index[0]]
-    except IndexError:
-        question_and_answer_section = lines[407:
-            disclaimer_index[0]]
+    # except IndexError:
+    #     question_and_answer_section = lines[407:
+    #         disclaimer_index[0]]
 
     # # Work with files produced from Q3 2011 until the present. The transcript 
     # # service marked each question in these files with a capital Q and a new 
@@ -118,7 +119,7 @@ for file in files:
         copyright_indices = [index for index, copyright_text in enumerate(
             question_and_answer_section) if re.search("|".join(['w ?w ?w ?', 
                 '\d{1,2}\\n', 'Company', '^LLC', '\\x0c', 'corrected transcript' 
-                'Q[0-9] [0-9]{4} Earnings Call', 'Ticker', 'Event Type', 'Date', 'AAPL', '--']), 
+                'Q[0-9] [0-9]{4} Earnings Call', 'Ticker', 'Event Type', 'Date', 'AAPL', r'-?-']), 
                 copyright_text)]
         for index in sorted(copyright_indices, reverse=True):
             del question_and_answer_section[index]
@@ -131,9 +132,9 @@ for file in files:
         # Find where each question and answer begins in what remains of the 
         # document
         question_indices = [index for index, question in enumerate(
-            question_and_answer_section) if re.search('<Q', question)]
+            question_and_answer_section) if re.search('<Q ?-?', question)]
         answer_indices = [index for index, answer in enumerate(
-            question_and_answer_section) if re.search('<A', answer)]
+            question_and_answer_section) if re.search('<A ?-?', answer)]
         question_answer_indices = question_indices + answer_indices
         question_answer_indices.sort(key=int)
         
@@ -149,13 +150,14 @@ for file in files:
                     question_answer_indices[index + 1]]
             except IndexError:
                 question_answer = question_and_answer_section[
-                question_answer_indices[index]:]
-            colon_index = [index for index, value in enumerate(
-                question_answer[0]) if re.search(r':', value)]
-            name = question_answer[0][5:colon_index[0]-1]
+                    question_answer_indices[index]:]
+            left_side_angle_bracket_index = [index for index, value in enumerate(
+                question_answer[0]) if re.search(r'<', value)]
+            right_side_angle_bracket_index = [index for index, value in enumerate(
+                question_answer[0]) if re.search(r'>', value)]
+            name = question_answer[0][left_side_angle_bracket_index[0]+5:right_side_angle_bracket_index[0]]
             position_and_company = False
-            question_or_answer_text = ''.join(question_answer)[colon_index[0]+1:
-                ].replace('\n', ' ')
+            question_or_answer_text = ''.join(question_answer)[right_side_angle_bracket_index[0]+2:].replace('\n', ' ')
             if re.search(r'<Q', str(question_answer)):
                 question = True
                 question_list.append(question_or_answer_text)
