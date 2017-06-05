@@ -5,8 +5,20 @@
     <style>
         .line {
             fill: none;
-            stroke: steelblue;
+            stroke: black;
             stroke-width: 2px;
+        }
+
+        div.tooltip {
+            position: absolute;
+            text-align: center;
+            width: 60px;
+            height: 28px;
+            padding: 2px;
+            font: 12px sans-serif;
+            background: white;
+            border: 1px solid black;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -33,6 +45,10 @@
             .attr('transform', 
                 'translate(' + margin.left + ',' + margin.top + ')');
     
+    var div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
     d3.tsv('Apple.tsv', function(error, data) {
         data.forEach(function(d) {
             d.date = parseTime(d.date);
@@ -60,6 +76,25 @@
 
     svg.append('g')
         .call(d3.axisLeft(y));
+
+    svg.selectAll("dot")
+        .data(data)
+        .enter().append("circle")
+        .attr("r", 5)
+        .attr("cx", function(d) { return x(d.date); })
+        .attr("cy", function(d) { return y(d.close); })
+        .attr('opacity', 0)
+        .on("mouseover", function(d) {
+            div.transition()
+            .duration(200)
+            .style("opacity", .9);
+
+    formatTime =  d3.timeFormat("%e %B %y");
+    div.html(formatTime(d.date) + "<br/>" + '$' + d.close)
+        .style("left", (d3.event.pageX) + "px")
+        .style("top", (d3.event.pageY - 30) + "px")
+        .style("width", "100px");
+        })
     });
 </script>
 </body>
