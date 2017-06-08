@@ -4,7 +4,9 @@
 
 Prometheus is a Python application that uses the Django framework, the Natural Language Toolkit, and a SQLite database to correlate corporate earnings reports and linguistic data from quarterly conference call transcripts. I am building the tool to test social psychological and linguistic theories on detecting deception in discourse.
 
-Currently, it parses PDFs of conference call transcripts into individual questions and answers. These linguistic units are then saved in a SQLite database for later interpretation by the application. Prometheus can now also translate TSV files of earnings data into an interactive line graph in D3. Due to copyright restrictions, I cannot host the source data here.
+Currently, it parses PDFs of conference call transcripts into individual questions and answers. These linguistic units are then saved in a SQLite database for later interpretation by the application. Prometheus can now also translate TSV files of earnings data into an interactive line graph in D3. 
+
+Due to copyright restrictions, I cannot host the source data for the conference calls here.
 
 ## Table of Contents
 
