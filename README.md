@@ -1,6 +1,6 @@
 # Prometheus
 
-##Prometheus is currently under development and will be ready for full deployment on June 23, 2017.
+## Prometheus is currently under development and will be ready for full deployment on June 23, 2017.
 
 Prometheus is a Python application that uses the Django framework, the Natural Language Toolkit, and a SQLite database to correlate corporate earnings reports and linguistic data from quarterly conference call transcripts. I am building the tool to test social psychological and linguistic theories on detecting deception in discourse.
 
