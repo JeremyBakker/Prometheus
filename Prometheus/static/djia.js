@@ -80,13 +80,13 @@ svg.append("text")
     .text("Date");
 
 svg.append("text")
-    .attr("transform", "rotate(-90)")
-    .attr("y", width + (margin.right - 20))
-    .attr("x", 0 - (height / 2))
+    .attr("transform", "rotate(90)")
+    .attr("y", 0 - width - margin.right)
+    .attr("x", 0 + (height / 2))
     .attr("dy", "1em")
     .attr("fill", "blue")
     .style("text-anchor", "middle")
-    .text("Value");
+    .text("Value in U.S. Dollars");
 
 svg.append("text")
     .attr("transform", "rotate(-90)")
@@ -94,7 +94,7 @@ svg.append("text")
     .attr("x", 0 - (height / 2))
     .attr("dy", "1em")
     .style("text-anchor", "middle")
-    .text("Value");  
+    .text("Value in U.S. Dollars");  
 
 svg.append("text")
     .attr("transform",
