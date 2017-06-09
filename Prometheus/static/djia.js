@@ -1,4 +1,4 @@
-var margin = {top: 20, right: 20, bottom: 50, left: 50},
+var margin = {top: 20, right: 50, bottom: 50, left: 50},
     width = 860 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 
@@ -39,6 +39,11 @@ svg.append('path')
     .attr('class', 'line')
     .attr('class', 'djia')
     .attr('d', valueline);
+
+svg.append('g')
+    .attr("class", "axisRight")
+    .call(d3.axisRight(y))
+    .attr("transform", "translate(" + width + ",0)");
 
 svg.selectAll("dot")
     .data(data)
@@ -86,7 +91,7 @@ svg.append("text")
 svg.append("rect")
     .attr("transform",
         "translate(" + (width - 217) + " ," + 
-        (height + margin.top - 92) + ")")
+        (height + margin.top - 90) + ")")
     .attr("width", 15)
     .attr("height", 15)
     .attr("fill", "blue")
