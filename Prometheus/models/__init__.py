@@ -1,0 +1,1 @@
+from Prometheus.models.transcript_model import Transcripts
