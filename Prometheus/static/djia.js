@@ -1,4 +1,4 @@
-var margin = {top: 30, right: 65, bottom: 50, left: 50},
+var margin = {top: 30, right: 65, bottom: 70, left: 50},
     width = 860 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 
@@ -75,7 +75,7 @@ svg.selectAll("dot")
 svg.append("text")             
     .attr("transform",
         "translate(" + (width/2) + " ," + 
-        (height + margin.top + 30) + ")")
+        (height + margin.top + 25) + ")")
     .style("text-anchor", "middle")
     .text("Date");
 
