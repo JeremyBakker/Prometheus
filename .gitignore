@@ -1,3 +1,7 @@
 *.pdf
 *.txt
 db.sqlite3
+migrations/
+settings.py
+__pycache__
+*.pyc

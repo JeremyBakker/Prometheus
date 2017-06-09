@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -49,7 +50,7 @@
     .attr("class", "tooltip")
     .style("opacity", 0);
 
-    d3.tsv('Apple.tsv', function(error, data) {
+    d3.tsv('../static/Apple.tsv', function(error, data) {
         data.forEach(function(d) {
             d.date = parseTime(d.date);
             d.close = +d.close;

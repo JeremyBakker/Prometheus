@@ -1,0 +1,1 @@
+from Prometheus.views.index_view import index
