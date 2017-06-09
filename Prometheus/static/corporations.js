@@ -1,31 +1,10 @@
-var margin = {top: 20, right: 20, bottom: 30, left: 50},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
-
-var parseTime = d3.timeParse('%d-%b-%y');
-
-var x = d3.scaleTime().range([0, width]);
-var y = d3.scaleLinear().range([height, 0]);
-
-var valueline = d3.line()
-    .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.close) });
-
-var svg = d3.select('body').append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
-    .append('g')
-        .attr('transform', 
-            'translate(' + margin.left + ',' + margin.top + ')');
-
-var div = d3.select("body").append("div")
-.attr("class", "tooltip")
-.style("opacity", 0);
+var company
 
 d3.tsv('../static/Apple.tsv', function(error, data) {
     data.forEach(function(d) {
         d.date = parseTime(d.date);
         d.close = +d.close;
+        company = d.company;
     });
 
 x.domain(d3.extent(data, function(d) { return d.date; }));
@@ -63,9 +42,25 @@ svg.selectAll("dot")
         .style("opacity", .9);
 
 formatTime =  d3.timeFormat("%e %B %y");
-div.html(formatTime(d.date) + "<br/>" + '$' + d.close)
+
+div.html(d.company + "<br/>" + formatTime(d.date) + "<br/>" + '$' + d.close)
     .style("left", (d3.event.pageX) + "px")
     .style("top", (d3.event.pageY - 30) + "px")
-    .style("width", "100px");
+    .style("width", "100px")
+    .style("height", "50px");
     })
+
+svg.append("text")
+    .data(data)
+    .attr("transform",
+        "translate(" + (width - 197) + " ," + 
+        (height + margin.top - 57) + ")")
+    .html("Corporation: " + company);
+
+svg.append("rect")
+    .attr("transform",
+        "translate(" + (width - 217) + " ," + 
+        (height + margin.top - 70) + ")")
+    .attr("width", 15)
+    .attr("height", 15)
 });
