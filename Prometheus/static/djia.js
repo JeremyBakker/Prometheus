@@ -1,4 +1,4 @@
-var margin = {top: 20, right: 50, bottom: 50, left: 50},
+var margin = {top: 30, right: 65, bottom: 50, left: 50},
     width = 860 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 
@@ -54,17 +54,23 @@ svg.selectAll("dot")
     .attr('opacity', 0)
     .on("mouseover", function(d) {
         div.transition()
-        .duration(200)
+        .duration(100)
         .style("opacity", .9);
 
-formatTime =  d3.timeFormat("%e %B %y");
+    formatTime =  d3.timeFormat("%e %B %y");
 
-div.html(d.company + "<br/>" + formatTime(d.date) + "<br/>" + '$' + d.close)
-    .style("left", (d3.event.pageX) + "px")
-    .style("top", (d3.event.pageY - 30) + "px")
-    .style("width", "100px")
-    .style("height", "50px");
-    })
+    div.html("<span style='color: white'>" + d.company + "<br/>" + formatTime(d.date) + "<br/>" + '$' + d.close + "</span>")
+        .style("left", (d3.event.pageX) + "px")
+        .style("top", (d3.event.pageY - 30) + "px")
+        .style("width", "100px")
+        .style("height", "50px")
+        .style("background-color", "blue");
+        })
+    .on("mouseout", function(d) {
+        div.transition()
+        .duration(200)
+        .style("opacity", 0)
+    });
 
 svg.append("text")             
     .attr("transform",
@@ -75,11 +81,20 @@ svg.append("text")
 
 svg.append("text")
     .attr("transform", "rotate(-90)")
+    .attr("y", width + (margin.right - 20))
+    .attr("x", 0 - (height / 2))
+    .attr("dy", "1em")
+    .attr("fill", "blue")
+    .style("text-anchor", "middle")
+    .text("Value");
+
+svg.append("text")
+    .attr("transform", "rotate(-90)")
     .attr("y", 0 - margin.left)
-    .attr("x",0 - (height / 2))
+    .attr("x", 0 - (height / 2))
     .attr("dy", "1em")
     .style("text-anchor", "middle")
-    .text("Value"); 
+    .text("Value");  
 
 svg.append("text")
     .attr("transform",
@@ -95,5 +110,15 @@ svg.append("rect")
     .attr("width", 15)
     .attr("height", 15)
     .attr("fill", "blue")
+
+svg.append("text")
+    .attr("transform",
+        "translate(" + (width/2) + " ," + 
+        (margin.top - 25) + ")")
+    .style("text-anchor", "middle")
+    .style("font-size", "2em")
+    .text("Corporate Earnings Over Time");
+
+
 
 });
