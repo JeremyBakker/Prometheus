@@ -3,7 +3,13 @@
 <html>
 <head>
     <title>Prometheus</title>
+    <link rel="stylesheet" type="text/css" href="../static/materialize.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville" rel="stylesheet">
     <style>
+        * {
+            font-family: 'Libre Baskerville', serif;
+        }
+        
         .line {
             fill: none;
             stroke: black;
@@ -34,11 +40,46 @@
     </style>
 </head>
 <body>
-<div id="valueChart"></div>
+<div class="container">
+    <div class="row valign-wrapper">
+        <h1 class="col s8">Prometheus</h1>
+        <a class='dropdown-button btn black' href='#' data-activates='dropdown'>Select a Corporation</a>
+        <ul id='dropdown' class='dropdown-content'>
+            <li><a href="#!" class="black" style="color:white">Apple</a></li>
+            <li><a href="#!" class="black" style="color:white">Adobe</a></li>
+            <li><a href="#!" class="black" style="color:white">Amazon</a></li>
+            <li><a href="#!" class="black" style="color:white">HP</a></li>
+            <li><a href="#!" class="black" style="color:white">IBM</a></li>
+            <li><a href="#!" class="black" style="color:white">Microsoft</a></li>
+            <li><a href="#!" class="black" style="color:white">Oracle</a></li>
+            <li><a href="#!" class="black" style="color:white">Samsung</a></li>
+        </ul>
+    </div>
+    <div class="divider"></div>
+    <div id="valueChart" class="section"></div>
+    <div class="divider"></div>
+    <div class="section row"></div>
+        <div id="languageChart" class="col s6">
+            <p>A Chart</p>
+        </div>
+        <div class="col s6">
+            <p>Perhaps Another Chart</p>
+        </div>
+    </div>
+</div>
 <h2> {{transcripts.name}}<h2>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script type="text/javascript" src="../static/corporations.js">
 </script>
 <script type="text/javascript" src="../static/djia.js"></script>
+<script type="text/javascript" src="../static/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../static/materialize.min.js"></script>
+<script>$(document).ready(function(){
+        $(".button-collapse").sideNav();
+        $('.parallax').parallax();
+        $(".dropdown-button").dropdown({
+            hover: false
+        });
+    });</script>
 </body>
 </html>

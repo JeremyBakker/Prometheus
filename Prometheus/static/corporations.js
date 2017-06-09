@@ -61,6 +61,7 @@ svg.append("text")
     .attr("transform",
         "translate(" + (width - 197) + " ," + 
         (height + margin.top - 57) + ")")
+    .style("font-size", ".8em")
     .html("Corporation: " + company);
 
 svg.append("rect")

@@ -77,6 +77,7 @@ svg.append("text")
         "translate(" + (width/2) + " ," + 
         (height + margin.top + 25) + ")")
     .style("text-anchor", "middle")
+    .style("font-size", ".8em")
     .text("Date");
 
 svg.append("text")
@@ -86,6 +87,7 @@ svg.append("text")
     .attr("dy", "1em")
     .attr("fill", "blue")
     .style("text-anchor", "middle")
+    .style("font-size", ".8em")
     .text("Value in U.S. Dollars");
 
 svg.append("text")
@@ -94,6 +96,7 @@ svg.append("text")
     .attr("x", 0 - (height / 2))
     .attr("dy", "1em")
     .style("text-anchor", "middle")
+    .style("font-size", ".8em")
     .text("Value in U.S. Dollars");  
 
 svg.append("text")
@@ -101,6 +104,7 @@ svg.append("text")
         "translate(" + (width - 100) + " ," + 
         (height + margin.top - 80) + ")")
     .style("text-anchor", "middle")
+    .style("font-size", ".8em")
     .text("Dow Jones Industrial Average");
 
 svg.append("rect")
@@ -118,7 +122,4 @@ svg.append("text")
     .style("text-anchor", "middle")
     .style("font-size", "2em")
     .text("Corporate Earnings Over Time");
-
-
-
 });
