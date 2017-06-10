@@ -1,6 +1,7 @@
 *.pdf
 *.txt
-db.sqlite3
+*.sqlite3
+*.sqlite3-journal
 migrations/
 settings.py
 __pycache__
