@@ -48,9 +48,10 @@
 <div class="container">
     <div class="row valign-wrapper">
         <h1 class="col s8">Prometheus</h1>
-        <a class='dropdown-button btn black' data-hover="true" href='#' data-activates='dropdown' class="col s4">Select a Corporation</a>
+        <btn black
+        <a class='dropdown-button btn black' data-hover="true" data-belowOrigin="true" href='#' data-activates='dropdown' class="col s4">Select a Corporation</a>
         <ul id='dropdown' class='dropdown-content'>
-            <li><a href="#!" style="color:black">Apple</a></li>
+            <li id="li"><a href="/AAPL" style="color:black">Apple</a></li>
             <li class="divider"></li>
             <li><a href="#!" style="color:black">Adobe</a></li>
             <li class="divider"></li>
@@ -80,18 +81,22 @@
     </div>
 </div>
 <h2> {{transcripts.name}}<h2>
+<h2>{{corporation}}</h2>
 <script src="https://d3js.org/d3.v4.min.js"></script>
-<script type="text/javascript" src="../static/corporations.js">
-</script>
+{% block content %}
+{% endblock %}
 <script type="text/javascript" src="../static/djia.js"></script>
 <script type="text/javascript" src="../static/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="../static/materialize.min.js"></script>
-<script>$(document).ready(function(){
+<script type="text/javascript" src="../static/index.js"></script>
+<script>
+    $(document).ready(function(){
         $(".button-collapse").sideNav();
         $('.parallax').parallax();
         $(".dropdown-button").dropdown({
-            hover: false
+                hover: false
         });
-    });</script>
+    });
+</script>
 </body>
 </html>

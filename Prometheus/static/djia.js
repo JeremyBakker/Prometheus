@@ -1,4 +1,4 @@
-var margin = {top: 30, right: 65, bottom: 70, left: 50},
+var margin = {top: 30, right: 65, bottom: 70, left: 60},
     width = 860 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 
@@ -40,10 +40,20 @@ svg.append('path')
     .attr('class', 'djia')
     .attr('d', valueline);
 
+svg.append("g")
+    .attr("class", "axis axis--x")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x))
+    .selectAll("text")
+    .attr("y", 0)
+    .attr("x", 9)
+    .attr("dy", ".35em")
+    .attr("transform", "rotate(45)")
+    .style("text-anchor", "start");
+
 svg.append('g')
     .attr("class", "axisRight")
-    .call(d3.axisRight(y))
-    .attr("transform", "translate(" + width + ",0)");
+    .call(d3.axisLeft(y));
 
 svg.selectAll("dot")
     .data(data)
@@ -81,21 +91,11 @@ svg.append("text")
     .text("Date");
 
 svg.append("text")
-    .attr("transform", "rotate(90)")
-    .attr("y", 0 - width - margin.right)
-    .attr("x", 0 + (height / 2))
-    .attr("dy", "1em")
-    .attr("fill", "black")
-    .style("text-anchor", "middle")
-    .style("font-size", ".8em")
-    .text("Value in U.S. Dollars");
-
-svg.append("text")
     .attr("transform", "rotate(-90)")
     .attr("y", 0 - margin.left)
     .attr("x", 0 - (height / 2))
     .attr("dy", "1em")
-    .attr("fill", "blue")
+    .attr("fill", "black")
     .style("text-anchor", "middle")
     .style("font-size", ".8em")
     .text("Value in U.S. Dollars");  
