@@ -3,12 +3,12 @@ from django.urls import reverse
 from Prometheus.models.models import *
 
 
-def corporations(request):
+def AAPL_transcript(request):
     
     template_name = 'corporations.html'
     context = {}
 
-    transcripts = AMZN.objects.get(pk=1)
+    transcripts = AAPL.objects.get(pk=1)
     # Transcripts.objects.filter(position=1, question=0)
 
     print("reverse", reverse('corporations'))

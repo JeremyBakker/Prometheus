@@ -7,10 +7,19 @@ import glob
 import sqlite3
 
 # Find all the .pdf files
-files = glob.glob('*/*.pdf')
+files = glob.glob('Data/*/*.pdf')
 
 for file in files:
+    # Printing the file name to keep track of progress while debugging.
     print(file)
+    
+    # Grab the stock symbol from the file name for use below in the SQL insert
+    # statements. Each stock symbol is preceded by an opening parenthesis and 
+    # ends with a hyphen in the file name.
+    parenthesis_index = file.index('(')
+    hyphen_index = file.index('-')
+    corporation = file[parenthesis_index+1:hyphen_index]
+
     # Convert the text file from pdf and transform it into an iterable list.
     text = process(file).decode()
     txt = io.StringIO(text)
@@ -166,10 +175,10 @@ for file in files:
                 answer_list.append(question_or_answer_text)
             with sqlite3.connect('db.sqlite3') as conn:
                 c = conn.cursor()
-                c.execute('''INSERT INTO TRANSCRIPTS VALUES(
-                    NULL, ?, ?, ?, ?, ?)''', (
+                c.execute('''INSERT INTO {} VALUES(
+                    NULL, ?, ?, ?, ?, ?)'''.format(corporation), (
+                        corporation, 
                         name, 
-                        position_and_company, 
                         question_or_answer_text, 
                         question,  
                         transcript_date)
