@@ -20,7 +20,7 @@ Due to copyright restrictions, I cannot host the source data for the conference 
 
 ## Background
 
-I am building Prometheus to test social psychological and linguistic theories on deception in discourse. Inspired by James W. Pennebaker's [_The Secret Life of Pronouns: What Our Words Say About Us_](https://www.amazon.com/Secret-Life-Pronouns-Words-About/dp/1608194965), I want to determine what linguistic data can predict about a company's value in the US stock market following quarterly conference calls. Prometheus will quantify CEO and CFO patterns of speech in concert with its display of earnings data over time.
+Inspired by James W. Pennebaker's [_The Secret Life of Pronouns: What Our Words Say About Us_](https://www.amazon.com/Secret-Life-Pronouns-Words-About/dp/1608194965), I want to determine what linguistic data can predict about a company's value in the US stock market following quarterly conference calls. Prometheus will quantify CEO and CFO patterns of speech in concert with its display of earnings data over time.
 
 
 ## Prerequisites
