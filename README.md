@@ -8,8 +8,6 @@ Currently, it parses PDFs of conference call transcripts into individual questio
 
 Due to copyright restrictions, I cannot host the source data for the conference calls here.
 
-![prometheus](https://user-images.githubusercontent.com/24864800/26999901-e909b5c6-4d69-11e7-8321-d885d864907f.gif)
-
 ## Table of Contents
 
 - [Background](#background)
