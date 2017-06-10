@@ -15,4 +15,6 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^AAPL/$', views.corporations, 
         name='corporations'),
+    url(r'^AMZN/$', views.corporations, 
+        name='corporations'),
 ]
