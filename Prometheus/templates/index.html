@@ -6,19 +6,24 @@
     <link rel="stylesheet" type="text/css" href="../static/materialize.min.css">
     <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville" rel="stylesheet">
     <style>
-        * {
+        body {
             font-family: 'Libre Baskerville', serif;
+            background-color: lightgrey;
         }
-        
+
+        #dropdown {
+            border-radius: 2px;
+        }
+
         .line {
             fill: none;
-            stroke: black;
+            stroke: blue;
             stroke-width: 2px;
         }
 
         path.djia {
             fill: none;
-            stroke: blue;
+            stroke: black;
             stroke-width:2px;
         }
 
@@ -29,12 +34,12 @@
             height: 28px;
             padding: 2px;
             font: 12px sans-serif;
-            background: white;
-            border: 1px solid black;
+/*            background-color: white;
+*/            border: 1px solid black;
             pointer-events: none;
         }
 
-        .axisRight g.tick text{
+        .axisLeft g.tick text{
             fill: blue;
         }
     </style>
@@ -43,16 +48,23 @@
 <div class="container">
     <div class="row valign-wrapper">
         <h1 class="col s8">Prometheus</h1>
-        <a class='dropdown-button btn black' href='#' data-activates='dropdown'>Select a Corporation</a>
+        <a class='dropdown-button btn black' data-hover="true" href='#' data-activates='dropdown' class="col s4">Select a Corporation</a>
         <ul id='dropdown' class='dropdown-content'>
-            <li><a href="#!" class="black" style="color:white">Apple</a></li>
-            <li><a href="#!" class="black" style="color:white">Adobe</a></li>
-            <li><a href="#!" class="black" style="color:white">Amazon</a></li>
-            <li><a href="#!" class="black" style="color:white">HP</a></li>
-            <li><a href="#!" class="black" style="color:white">IBM</a></li>
-            <li><a href="#!" class="black" style="color:white">Microsoft</a></li>
-            <li><a href="#!" class="black" style="color:white">Oracle</a></li>
-            <li><a href="#!" class="black" style="color:white">Samsung</a></li>
+            <li><a href="#!" style="color:black">Apple</a></li>
+            <li class="divider"></li>
+            <li><a href="#!" style="color:black">Adobe</a></li>
+            <li class="divider"></li>
+            <li><a href="#!" style="color:black">Amazon</a></li>
+            <li class="divider"></li>
+            <li><a href="#!" style="color:black">HP</a></li>
+            <li class="divider"></li>
+            <li><a href="#!" style="color:black">IBM</a></li>
+            <li class="divider"></li>
+            <li><a href="#!" style="color:black">Microsoft</a></li>
+            <li class="divider"></li>
+            <li><a href="#!" style="color:black">Oracle</a></li>
+            <li class="divider"></li>
+            <li><a href="#!" style="color:black">Samsung</a></li>
         </ul>
     </div>
     <div class="divider"></div>

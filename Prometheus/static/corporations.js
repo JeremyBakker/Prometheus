@@ -27,7 +27,8 @@ svg.append("g")
   .style("text-anchor", "start");
 
 svg.append('g')
-    .call(d3.axisLeft(y));
+    .call(d3.axisLeft(y))
+    .attr("class", "axisLeft");
 
 svg.selectAll("dot")
     .data(data)
@@ -43,10 +44,10 @@ svg.selectAll("dot")
 
   formatTime =  d3.timeFormat("%e %B %y");
 
-  div.html(d.company + "<br/>" + formatTime(d.date) + "<br/>" + '$' + d.close)
+  div.html("<span style='color: blue'>" + d.company + "<br/>" + formatTime(d.date) + "<br/>" + '$' + d.close + "</span>")
       .style("left", (d3.event.pageX) + "px")
       .style("top", (d3.event.pageY - 30) + "px")
-      .style("width", "100px")
+      .style("width", "110px")
       .style("height", "50px")
       .style("background-color", "white");
     })
@@ -70,4 +71,5 @@ svg.append("rect")
         (height + margin.top - 70) + ")")
     .attr("width", 15)
     .attr("height", 15)
+    .attr("fill", "blue")
 });

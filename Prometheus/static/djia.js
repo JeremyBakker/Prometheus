@@ -59,12 +59,12 @@ svg.selectAll("dot")
 
     formatTime =  d3.timeFormat("%e %B %y");
 
-    div.html("<span style='color: white'>" + d.company + "<br/>" + formatTime(d.date) + "<br/>" + '$' + d.close + "</span>")
+    div.html("<span style='color: black'>" + d.company + "<br/>" + formatTime(d.date) + "<br/>" + '$' + d.close + "</span>")
         .style("left", (d3.event.pageX) + "px")
         .style("top", (d3.event.pageY - 30) + "px")
-        .style("width", "100px")
+        .style("width", "110px")
         .style("height", "50px")
-        .style("background-color", "blue");
+        .style("background-color", "white");
         })
     .on("mouseout", function(d) {
         div.transition()
@@ -85,7 +85,7 @@ svg.append("text")
     .attr("y", 0 - width - margin.right)
     .attr("x", 0 + (height / 2))
     .attr("dy", "1em")
-    .attr("fill", "blue")
+    .attr("fill", "black")
     .style("text-anchor", "middle")
     .style("font-size", ".8em")
     .text("Value in U.S. Dollars");
@@ -95,14 +95,15 @@ svg.append("text")
     .attr("y", 0 - margin.left)
     .attr("x", 0 - (height / 2))
     .attr("dy", "1em")
+    .attr("fill", "blue")
     .style("text-anchor", "middle")
     .style("font-size", ".8em")
     .text("Value in U.S. Dollars");  
 
 svg.append("text")
     .attr("transform",
-        "translate(" + (width - 100) + " ," + 
-        (height + margin.top - 80) + ")")
+        "translate(" + (width - 106) + " ," + 
+        (height + margin.top - 78) + ")")
     .style("text-anchor", "middle")
     .style("font-size", ".8em")
     .text("Dow Jones Industrial Average");
@@ -113,7 +114,7 @@ svg.append("rect")
         (height + margin.top - 90) + ")")
     .attr("width", 15)
     .attr("height", 15)
-    .attr("fill", "blue")
+    .attr("fill", "black")
 
 svg.append("text")
     .attr("transform",
