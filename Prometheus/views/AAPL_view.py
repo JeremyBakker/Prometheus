@@ -8,11 +8,12 @@ def AAPL_transcript(request):
     template_name = 'corporations.html'
     context = {}
 
-    transcripts = AAPL.objects.get(pk=1)
-    # Transcripts.objects.filter(position=1, question=0)
+    transcripts = AAPL.objects.filter(question=0)
 
-    print("reverse", reverse('corporations'))
+    questions = {transcript.name: transcript.question_answer_text for transcript in transcripts}
 
-    context = {"transcripts": transcripts}
+    dates = {transcript.date_of_call for transcript in transcripts}
+
+    context = {"transcripts": transcripts, "dates": dates}
 
     return render(request, template_name, context)

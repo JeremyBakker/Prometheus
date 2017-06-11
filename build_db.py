@@ -27,6 +27,6 @@ for corporation in corporation_set:
                                 name                    VARCHAR(20) NOT NULL,
                                 question_answer_text    VARCHAR(100) NOT NULL,
                                 question                INTEGER NOT NULL, 
-                                date_of_call            VARCHAR(20) NOT NULL)
+                                date_of_call            DATE() NOT NULL)
                                 '''.format(corporation)
         c.execute(sql_question_answer)

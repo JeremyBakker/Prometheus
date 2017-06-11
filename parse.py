@@ -5,6 +5,7 @@ import io
 import re
 import glob
 import sqlite3
+import datetime
 
 # Find all the .pdf files
 files = glob.glob('Data/*/*.pdf')
@@ -28,6 +29,8 @@ for file in files:
     
     # Grab the transcript date from the file name for the database entry below.
     transcript_date = str(file[-13:-4])
+    # Convert the date into a YYYY-MM-DD format for SQL.
+    transcript_date = datetime.datetime.strptime(transcript_date, "%d-%b-%y").strftime("%Y-%m-%d")
 
     # Find where the QUESTION AND ANSWER SECTION begins and ends, then slice it
     # out.

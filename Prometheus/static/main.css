@@ -1,0 +1,39 @@
+body {
+    font-family: 'Libre Baskerville', serif;
+    background-color: lightgrey;
+}
+
+#dropdown {
+    border-radius: 2px;
+}
+
+.line {
+    fill: none;
+    stroke: blue;
+    stroke-width: 2px;
+}
+
+path.djia {
+    fill: none;
+    stroke: black;
+    stroke-width:2px;
+}
+
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 60px;
+    height: 28px;
+    padding: 2px;
+    font: 12px sans-serif;
+    border: 1px solid black;
+    pointer-events: none;
+}
+
+.axisLeft g.tick text{
+    fill: blue;
+}
+
+ul.dropdown-content.select-dropdown li span {
+    color: #000;
+}

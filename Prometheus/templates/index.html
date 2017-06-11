@@ -5,44 +5,7 @@
     <title>Prometheus</title>
     <link rel="stylesheet" type="text/css" href="../static/materialize.min.css">
     <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Libre Baskerville', serif;
-            background-color: lightgrey;
-        }
-
-        #dropdown {
-            border-radius: 2px;
-        }
-
-        .line {
-            fill: none;
-            stroke: blue;
-            stroke-width: 2px;
-        }
-
-        path.djia {
-            fill: none;
-            stroke: black;
-            stroke-width:2px;
-        }
-
-        div.tooltip {
-            position: absolute;
-            text-align: center;
-            width: 60px;
-            height: 28px;
-            padding: 2px;
-            font: 12px sans-serif;
-/*            background-color: white;
-*/            border: 1px solid black;
-            pointer-events: none;
-        }
-
-        .axisLeft g.tick text{
-            fill: blue;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="../static/main.css">
 </head>
 <body>
 <div class="container">
@@ -69,19 +32,44 @@
         </ul>
     </div>
     <div class="divider"></div>
-    <div id="valueChart" class="section"></div>
-    <div class="divider"></div>
-    <div class="section row"></div>
-        <div id="languageChart" class="col s6">
-            <p>A Chart</p>
-        </div>
-        <div class="col s6">
-            <p>Perhaps Another Chart</p>
+    <div class="section row">
+        <div id="valueChart"></div>
+        <div id="transcriptSelectionForm">
+            <form>
+                <div class="input-field col s12">
+                <select>
+                    <option value="" disabled selected>Choose your option</option>
+                        {% for date in dates%}
+                            <option value="1">{{date}}</option>
+                        {% endfor %}
+                </select>
+                <label>Conference Call Transcripts</label>
+              </div>
+            </form>
         </div>
     </div>
+    <div class="divider"></div>
+    <div class="section">
+        <table>
+            <thead>
+                <tr>
+                    <th>Word Count</th>
+                    <th>Positive</th>
+                    <th>Negative</th>
+                    <th>Knowledge</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>DATA</td>
+                    <td>DATA</td>
+                    <td>DATA</td>
+                    <td>DATA</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
-<h2> {{transcripts.name}}<h2>
-<h2>{{corporation}}</h2>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 {% block content %}
 {% endblock %}
@@ -96,6 +84,9 @@
         $(".dropdown-button").dropdown({
                 hover: false
         });
+    });
+    $(document).ready(function() {
+        $('select').material_select();
     });
 </script>
 </body>
