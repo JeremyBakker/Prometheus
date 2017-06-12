@@ -37,7 +37,7 @@
     </div>
     <div class="divider"></div>
     {% if not search_view %}
-        <h5 class="center">Conference Call Transcripts</h5>
+        <h4 class="center">Conference Call Transcripts</h4>
         <div id="transcriptDataDiv">
             <div class="section" id="transcriptSelectionForm">
                 <form method="get" action='{% url "search" %}' class="row valign-wrapper">
@@ -63,39 +63,44 @@
         </div>
     {% endif %}
     {% if search_view%}
-        <h5 class="center">Natural Language Data</h5>
-        <div class="section">
-            <table class="centered">
-                <thead>
-                    <tr>
-                        <th>Transcript Date</th>
-                        <th>Position</th>
-                        <th>Word Count</th>
-                        <th>Positive</th>
-                        <th>Negative</th>
-                        <th>Knowledge</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>DATA</td>
-                        <td>CEO</td>
-                        <td>DATA</td>
-                        <td>DATA</td>
-                        <td>DATA</td>
-                        <td>DATA</td>
-                    </tr>
-                    <tr>
-                        <td>DATA</td>
-                        <td>CFO</td>
-                        <td>DATA</td>
-                        <td>DATA</td>
-                        <td>DATA</td>
-                        <td>DATA</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <h4 class="center" style="margin-top:20px">Natural Language Data</h4>
+        <table class="striped">
+            <thead class="grey darken-2" style="color: white; font-size: 1.2em">
+                <tr>
+                    <th style="border-radius: 0 ">{{date}}</th>
+                    <th style="border-radius: 0">CEO</th>
+                    <th style="border-radius: 0">CFO</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Word Count in Transcript</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Word Count per Response</td>
+                    <td></td>
+                    <td></td>
+
+                </tr>
+                <tr>
+                    <td>Positive</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Negative</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Knowledge</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
     {% endif %}
 </div>
 <script src="https://d3js.org/d3.v4.min.js"></script>
