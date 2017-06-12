@@ -13,5 +13,5 @@ urlpatterns = [
         name='AAPL'),
     url(r'^AMZN/$', views.transcript, 
         name='AMZN'),
-    url(r'^AMZN/search/$', views.search, name='search')
+    url(r'^search/$', views.search, name='search')
 ]

@@ -1,3 +1,6 @@
+from django.shortcuts import render
+
+
 def search (request):
     print(request.path)
     template = 'corporations.html'
