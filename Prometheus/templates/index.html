@@ -10,7 +10,7 @@
 <body>
 <div class="container">
     <div class="row valign-wrapper" style="margin-bottom: 5px">
-        <h1 class="col s8" style="margin-bottom: 0; margin-top: 10px">Prometheus</h1>
+        <h1 class="col s8" style="margin-bottom: 0; margin-top: 20px">Prometheus</h1>
         <btn black
         <a class='dropdown-button btn black' data-hover="true" data-belowOrigin="true" href='#' data-activates='dropdown' class="col s4">Select a Corporation</a>
         <ul id='dropdown' class='dropdown-content'>
@@ -39,9 +39,9 @@
     {% if not search_view %}
         <h5 class="center">Conference Call Transcripts</h5>
         <div id="transcriptDataDiv">
-            <div class="section col s6" id="transcriptSelectionForm">
+            <div class="section" id="transcriptSelectionForm">
                 <form method="get" action='{% url "search" %}' class="row valign-wrapper">
-                    <div class="input-field col s6">
+                    <div class="section input-field col s6">
                         <select name="transcript">
                             {% if corporation %}
                                 <option value="" disabled selected>Choose your option</option>
@@ -55,8 +55,8 @@
                         </select>
                         <label>Conference Call Transcripts</label>
                     </div>
-                    <div class="col s6 center-align">
-                        <input class="btn black" type="submit"></input>
+                    <div class='col s6'>
+                        <input class="btn black col s6" type="submit"/>
                     </div>
                 </form>
             </div>
