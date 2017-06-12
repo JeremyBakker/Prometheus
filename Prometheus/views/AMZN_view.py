@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render
 from django.urls import reverse
 from Prometheus.models.models import *
@@ -5,12 +6,18 @@ from Prometheus.models.models import *
 
 def AMZN_transcript(request):
     
-    template_name = 'corporations.html'
-    context = {}
+    template = 'corporations.html'
 
-    transcripts = AMZN.objects.get(pk=28)
-    # Transcripts.objects.filter(position=1, question=0)
+    transcripts = AAPL.objects.filter(question=0)
 
-    context = {"transcripts": transcripts}
+    questions = {transcript.name: transcript.question_answer_text for transcript in transcripts}
 
-    return render(request, template_name, context)
+    dates = {transcript.date_of_call for transcript in transcripts}
+    dates = [datetime.datetime.strptime(str(date), "%Y-%m-%d") for date in dates]
+    dates.sort()
+    sorted_dates = [datetime.datetime.strftime(date, "%d %B %y") for date in dates]
+
+
+    context = {"transcripts": transcripts, "dates": sorted_dates}
+
+    return render(request, template, context)

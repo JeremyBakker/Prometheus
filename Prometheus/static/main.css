@@ -37,3 +37,7 @@ div.tooltip {
 ul.dropdown-content.select-dropdown li span {
     color: #000;
 }
+
+#transcriptDataDiv {
+    margin-top: 10px;
+}

@@ -1,8 +1,8 @@
 {% extends 'index.html' %}
 
-{% block content %}
+{% block corporation_D3 %}
     <script>
-        var company = window.location.pathname.slice(1,-1)
+        var company = window.location.pathname.split('/').join('')
 
         d3.tsv(`../static/${company}.tsv`, function(error, data) {
             data.forEach(function(d) {

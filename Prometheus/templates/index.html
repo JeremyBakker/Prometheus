@@ -32,27 +32,33 @@
         </ul>
     </div>
     <div class="divider"></div>
-    <div class="section row">
+    <div class="section">
         <div id="valueChart"></div>
-        <div id="transcriptSelectionForm">
-            <form>
-                <div class="input-field col s12">
+    </div>
+    <div class="divider"></div>
+    <h4 class="center">Conference Call Transcripts</h4>
+    <div class="row" id="transcriptDataDiv">
+        <div class="section col s6" id="transcriptSelectionForm">
+            <form method="get" action='{% url "search" %}'>
+                <div class="input-field">
                 <select>
                     <option value="" disabled selected>Choose your option</option>
                         {% for date in dates%}
-                            <option value="1">{{date}}</option>
+                            <option>{{date}}</option>
                         {% endfor %}
                 </select>
                 <label>Conference Call Transcripts</label>
-              </div>
+                <button type='submit'>Try</button>
+                <a class="btn black">Submit</a>
+                </div>
             </form>
         </div>
     </div>
-    <div class="divider"></div>
     <div class="section">
         <table>
             <thead>
                 <tr>
+                    <th>Position</th>
                     <th>Word Count</th>
                     <th>Positive</th>
                     <th>Negative</th>
@@ -61,6 +67,14 @@
             </thead>
             <tbody>
                 <tr>
+                    <td>CEO</td>
+                    <td>DATA</td>
+                    <td>DATA</td>
+                    <td>DATA</td>
+                    <td>DATA</td>
+                </tr>
+                <tr>
+                    <td>CFO</td>
                     <td>DATA</td>
                     <td>DATA</td>
                     <td>DATA</td>
@@ -71,7 +85,7 @@
     </div>
 </div>
 <script src="https://d3js.org/d3.v4.min.js"></script>
-{% block content %}
+{% block corporation_D3 %}
 {% endblock %}
 <script type="text/javascript" src="../static/djia.js"></script>
 <script type="text/javascript" src="../static/jquery-3.2.1.min.js"></script>

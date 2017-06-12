@@ -9,8 +9,9 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^$', views.index, name='index'),
-    url(r'^AAPL/$', views.AAPL_transcript, 
+    url(r'^AAPL/$', views.transcript, 
         name='AAPL'),
-    url(r'^AMZN/$', views.AMZN_transcript, 
+    url(r'^AMZN/$', views.transcript, 
         name='AMZN'),
+    url(r'^AMZN/search/$', views.search, name='search')
 ]
