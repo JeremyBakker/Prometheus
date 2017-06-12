@@ -8,6 +8,8 @@ Currently, it parses PDFs of conference call transcripts into individual questio
 
 Due to copyright restrictions, I cannot host the source data for the conference calls here.
 
+![image](https://user-images.githubusercontent.com/24864800/27037784-96171b6a-4f4e-11e7-8acb-9a06fbca429d.png)
+
 ## Table of Contents
 
 - [Background](#background)
