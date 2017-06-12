@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.urls import reverse
 from Prometheus.models.models import *
-from django.http import HttpRequest
 from django.apps import apps
 import datetime
 
@@ -10,7 +9,7 @@ def transcript(request):
     corporation = (request.path).replace("/","")
     model = apps.get_model('Prometheus', corporation)
     if request.method == "GET":
-        template = 'corporations.html'
+        template = 'index.html'
 
         answers_query_set = model.objects.filter(question=0)
 

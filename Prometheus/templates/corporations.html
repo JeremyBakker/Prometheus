@@ -1,10 +1,6 @@
-{% extends 'index.html' %}
 
-{% block corporation_D3 %}
     <script>
-        var company = window.location.pathname.split('/').join('')
-
-        d3.tsv(`../static/${company}.tsv`, function(error, data) {
+        d3.tsv('../static/{{corporation}}.tsv', function(error, data) {
             data.forEach(function(d) {
                 d.date = parseTime(d.date);
                 d.close = +d.close;
@@ -78,4 +74,3 @@
             .attr("fill", "blue")
         });
     </script>
-{% endblock %}

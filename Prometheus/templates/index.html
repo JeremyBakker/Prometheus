@@ -1,4 +1,4 @@
-{% load staticfiles %}
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -41,15 +41,14 @@
         <div class="section col s6" id="transcriptSelectionForm">
             <form method="get" action='{% url "search" %}'>
                 <div class="input-field">
-                <select>
+                <select name="transcript">
                     <option value="" disabled selected>Choose your option</option>
                         {% for date in dates%}
-                            <option>{{date}}</option>
+                            <option>{{corporation}}-{{date}}</option>
                         {% endfor %}
                 </select>
                 <label>Conference Call Transcripts</label>
-                <button type='submit'>Try</button>
-                <a class="btn black">Submit</a>
+                <input class="btn black" type='submit'></input>
                 </div>
             </form>
         </div>
@@ -68,7 +67,7 @@
             <tbody>
                 <tr>
                     <td>CEO</td>
-                    <td>DATA</td>
+                    <td>{{test}}</td>
                     <td>DATA</td>
                     <td>DATA</td>
                     <td>DATA</td>
@@ -85,8 +84,9 @@
     </div>
 </div>
 <script src="https://d3js.org/d3.v4.min.js"></script>
-{% block corporation_D3 %}
-{% endblock %}
+{% if corporation %}
+    {% include 'corporations.html' %}
+{% endif %}
 <script type="text/javascript" src="../static/djia.js"></script>
 <script type="text/javascript" src="../static/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="../static/materialize.min.js"></script>
