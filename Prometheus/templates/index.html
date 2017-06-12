@@ -9,8 +9,8 @@
 </head>
 <body>
 <div class="container">
-    <div class="row valign-wrapper">
-        <h1 class="col s8">Prometheus</h1>
+    <div class="row valign-wrapper" style="margin-bottom: 5px">
+        <h1 class="col s8" style="margin-bottom: 0; margin-top: 10px">Prometheus</h1>
         <btn black
         <a class='dropdown-button btn black' data-hover="true" data-belowOrigin="true" href='#' data-activates='dropdown' class="col s4">Select a Corporation</a>
         <ul id='dropdown' class='dropdown-content'>
@@ -33,55 +33,70 @@
     </div>
     <div class="divider"></div>
     <div class="section">
-        <div id="valueChart"></div>
+        <div id="valueChart" class="center"></div>
     </div>
     <div class="divider"></div>
-    <h4 class="center">Conference Call Transcripts</h4>
-    <div class="row" id="transcriptDataDiv">
-        <div class="section col s6" id="transcriptSelectionForm">
-            <form method="get" action='{% url "search" %}'>
-                <div class="input-field">
-                <select name="transcript">
-                    <option value="" disabled selected>Choose your option</option>
-                        {% for date in dates%}
-                            <option>{{corporation}}-{{date}}</option>
-                        {% endfor %}
-                </select>
-                <label>Conference Call Transcripts</label>
-                <input class="btn black" type='submit'></input>
-                </div>
-            </form>
+    {% if not search_view %}
+        <h5 class="center">Conference Call Transcripts</h5>
+        <div id="transcriptDataDiv">
+            <div class="section col s6" id="transcriptSelectionForm">
+                <form method="get" action='{% url "search" %}' class="row valign-wrapper">
+                    <div class="input-field col s6">
+                        <select name="transcript">
+                            {% if corporation %}
+                                <option value="" disabled selected>Choose your option</option>
+                            {% else %}
+                                <option value="" disabled selected>Please choose a corporation above</option>
+                            {% endif %}
+                                {% for date in dates%}
+                                    <option>{{corporation}}-{{date}}</option>
+                                {% endfor %}
+                            }
+                        </select>
+                        <label>Conference Call Transcripts</label>
+                    </div>
+                    <div class="col s6 center-align">
+                        <input class="btn black" type="submit"></input>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
-    <div class="section">
-        <table>
-            <thead>
-                <tr>
-                    <th>Position</th>
-                    <th>Word Count</th>
-                    <th>Positive</th>
-                    <th>Negative</th>
-                    <th>Knowledge</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>CEO</td>
-                    <td>{{test}}</td>
-                    <td>DATA</td>
-                    <td>DATA</td>
-                    <td>DATA</td>
-                </tr>
-                <tr>
-                    <td>CFO</td>
-                    <td>DATA</td>
-                    <td>DATA</td>
-                    <td>DATA</td>
-                    <td>DATA</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    {% endif %}
+    {% if search_view%}
+        <h5 class="center">Natural Language Data</h5>
+        <div class="section">
+            <table class="centered">
+                <thead>
+                    <tr>
+                        <th>Transcript Date</th>
+                        <th>Position</th>
+                        <th>Word Count</th>
+                        <th>Positive</th>
+                        <th>Negative</th>
+                        <th>Knowledge</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>DATA</td>
+                        <td>CEO</td>
+                        <td>DATA</td>
+                        <td>DATA</td>
+                        <td>DATA</td>
+                        <td>DATA</td>
+                    </tr>
+                    <tr>
+                        <td>DATA</td>
+                        <td>CFO</td>
+                        <td>DATA</td>
+                        <td>DATA</td>
+                        <td>DATA</td>
+                        <td>DATA</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
 </div>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 {% if corporation %}
