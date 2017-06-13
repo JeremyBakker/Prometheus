@@ -30,9 +30,17 @@ div.tooltip {
     pointer-events: none;
 }
 
-.axisLeft g.tick text{
-    fill: blue;
+g.axisRight path{
+  stroke: blue;
 }
+
+g.axisRight g.tick path{
+  stroke: blue;
+}
+
+g.axisRight g.tick text{
+  fill: blue;
+}  
 
 ul.dropdown-content.select-dropdown li span {
     color: #000;

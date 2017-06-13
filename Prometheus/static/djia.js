@@ -24,15 +24,16 @@ var div = d3.select("body").append("div")
 
 var company
 
-d3.tsv('../static/djia.tsv', function(error, data) {
+d3.tsv('../static/data/djia.tsv', function(error, data) {
     data.forEach(function(d) {
         d.date = parseTime(d.date);
-        d.close = (+d.close).toFixed(2);
+        d.close = +d.close;
         company = d.company
     });
 
 x.domain(d3.extent(data, function(d) { return d.date; }));
-y.domain([0, d3.max(data, function(d) { return d.close; })]);
+y.domain([0, d3.max(data, function(d) { 
+    return d.close; })]);
 
 svg.append('path')
     .data([data])
@@ -52,7 +53,7 @@ svg.append("g")
     .style("text-anchor", "start");
 
 svg.append('g')
-    .attr("class", "axisRight")
+    .attr("class", "axisLeft")
     .call(d3.axisLeft(y));
 
 svg.selectAll("dot")
@@ -119,7 +120,7 @@ svg.append("rect")
 svg.append("text")
     .attr("transform",
         "translate(" + (width/2) + " ," + 
-        (margin.top - 25) + ")")
+        (margin.top - 35) + ")")
     .style("text-anchor", "middle")
     .style("font-size", "2em")
     .text("Corporate Earnings Over Time");
