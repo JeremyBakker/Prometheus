@@ -1,9 +1,10 @@
+from collections import Counter
 from django.shortcuts import render
 from django.apps import apps
 from nltk import word_tokenize
+from nltk.util import ngrams
 from statistics import median
 import datetime
-import nltk
 import re
 
 def search (request):
@@ -12,6 +13,7 @@ def search (request):
     c_financial_o_list = ['^(Peter)? ?Oppenheimer', '^(Luca)? ?Maestri']
     c_executive_o_list_regex = re.compile(r'\b(?:%s)\b' % '|'.join(c_executive_o_list))
     c_financial_o_list_regex = re.compile(r'\b(?:%s)\b' % '|'.join(c_financial_o_list))
+    
     try:
         transcript = request.GET['transcript']
         corporation = transcript.split('-')[0]
@@ -34,6 +36,8 @@ def search (request):
         number_of_c_financial_o_negative_words = 0
         number_of_c_executive_o_positive_words = 0
         number_of_c_financial_o_positive_words = 0
+        bigram_references_to_general_knowledge = 0
+        trigram_references_to_general_knowledge = 0
 
         for answer in answers_query_set:
             if c_executive_o_list_regex.search(answer.name):                
@@ -41,24 +45,36 @@ def search (request):
                 c_executive_o_answer_list.append(filtered_answer)
                 c_executive_o_answer_length_list.append(len(filtered_answer))    
                 
+                bigrams = list(ngrams(filtered_answer, 2))
+                bigrams_strings = ["%s %s" % bigram for bigram in bigrams]
+                trigrams = list(ngrams(filtered_answer, 3))
+                trigrams_strings = ["%s %s %s" % trigram for trigram in trigrams]
+
                 with open('Prometheus/static/lexicons/negative_words.txt', 'r') as file:
                     lines = [line.strip() for line in file.readlines()]
                     if set(filtered_answer).intersection(lines):
                         negative_intersection_length = find_intersection_length(filtered_answer, lines)
                         number_of_c_executive_o_negative_words += negative_intersection_length
-            
+
                 with open('Prometheus/static/lexicons/positive_words.txt', 'r') as file:
                     lines = [line.strip() for line in file.readlines()]
                     if set(filtered_answer).intersection(lines):
                         positive_intersection_length = find_intersection_length(filtered_answer, lines)
                         number_of_c_executive_o_positive_words += positive_intersection_length
 
+                with open('Prometheus/static/lexicons/general_knowledge.txt', 'r') as file:
+                    lines = [line.strip().upper() for line in file.readlines()]
+                    if set(bigrams_strings).intersection(lines):
+                        bigram_references_to_general_knowledge += 1
+                    if set(trigrams_strings).intersection(lines):
+                        trigram_references_to_general_knowledge += 1
+ 
             if c_financial_o_list_regex.search(answer.name):
                 filtered_answer = clean_text(answer.question_answer_text)
 
                 c_financial_o_answer_list.append(filtered_answer)
                 c_financial_o_answer_length_list.append(len(filtered_answer))
-                
+
                 with open('Prometheus/static/lexicons/negative_words.txt', 'r') as file:
                     lines = [line.strip() for line in file.readlines()]
                     if set(filtered_answer).intersection(lines):
@@ -78,10 +94,12 @@ def search (request):
             c_executive_o_answer_length_median = median(c_executive_o_answer_length_list)
         except ValueError:
             c_executive_o_answer_length_median = "N/A"
+
         try:
             c_financial_o_answer_length_median = int(median(c_financial_o_answer_length_list))
         except ValueError:
             c_financial_o_answer_length_median = "N/A"  
+
     except KeyError:
         corporation = ""
         pass
@@ -90,7 +108,7 @@ def search (request):
     c_financial_o_negative_proportion = number_of_c_financial_o_negative_words / c_financial_o_answer_length_sum
     c_executive_o_positive_proportion = number_of_c_executive_o_positive_words / c_executive_o_answer_length_sum
     c_financial_o_positive_proportion = number_of_c_financial_o_positive_words / c_financial_o_answer_length_sum
-    
+    c_executive_o_percentage_references_to_general_knowledge = (bigram_references_to_general_knowledge + trigram_references_to_general_knowledge) / len(c_executive_o_answer_list)
 
     template = 'index.html'
     context = {
@@ -104,8 +122,10 @@ def search (request):
         "cFo_negative": round(c_financial_o_negative_proportion, 4),
         "cEo_negative": round(c_executive_o_negative_proportion, 4),
         "cEo_positive": round(c_executive_o_positive_proportion, 4),
-        "cFo_positive": round(c_financial_o_positive_proportion, 4)
+        "cFo_positive": round(c_financial_o_positive_proportion, 4),
+        "cEo_knowledge": round(c_executive_o_percentage_references_to_general_knowledge, 4)
         }
+
     return render(request, template, context)
 
 def clean_text(question_answer_text):                
