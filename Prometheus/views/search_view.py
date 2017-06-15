@@ -24,256 +24,284 @@ def search (request):
     # These regex patterns lists contain the possible renderings of the names
     # of CEOs and CFOs of the corporations whose transcripts we analyze. The
     # transcripts lack this data in any reliable pattern to pull when parsing. 
-    # Thus, a hard-coded list is necessary for now.
-    c_exec_o_list = ['^(Steve)? ?Jobs', '^(Tim)?(othy)? ?Cook']
-    c_financ_o_list = ['^(Peter)? ?Oppenheimer', '^(Luca)? ?Maestri']
+    # Thus, a hard-coded list is necessary for now. Each row correlates to a
+    # company: Apple, Adobe, Amazon, HP, IBM, Microsoft, Oracle, and Samsung.
+    # Within this data set, there is only one instance of a single name 
+    # appearing in two different roles over time. Tim Cook served as an EVP and
+    # COO at Apple before becoming CEO in 2011. I include him in the CEO list
+    # because Steve Jobs rarely, if ever, spoke on earnings calls. Tim Cook 
+    # filled that role in practice even before he became CEO.
+    c_exec_o_list = [
+    '^(Steve)? ?Jobs', '^(Tim)?(othy)? ?Cook', 
+    '^(Bruce)? ?Chizen', '^(Shantanu)? ?Narayen',
+    '(Jeff)?(rey)? ?P?.? ?Bezos']
+    c_financ_o_list = [
+    '^(Peter)? ?Oppenheimer', '^(Luca)? ?Maestri',
+    '^(Murray)? ?Demo', '^(Mark)? ?Garrett',
+    '^Th?(om)?(as)? (J\.)? ?Szkutak' 
+    ]
     c_exec_o_list_regex = re.compile(r'\b(?:%s)\b' % '|'.join(
         c_exec_o_list))
     c_financ_o_list_regex = re.compile(r'\b(?:%s)\b' % '|'.join(
         c_financ_o_list))
     
+    # Here we pull the transcript name from the select box to get the 
+    # relevant data we will use to render the page.
+    transcript = request.GET['transcript']
+    corporation = transcript.split('-')[0]
+    transcript_date = transcript.split('-')[1]
+
+    # Transform the date both for the SQL query and for display on the 
+    # page.
+    transcript_date = datetime.datetime.strptime(
+        (transcript_date), "%d %B %y")
+    transcript_date_for_db = datetime.datetime.strftime(
+        (transcript_date), "%Y-%m-%d")
+    transcript_date_for_display = datetime.datetime.strftime(
+        (transcript_date), "%B %d, %Y")
+
+    # Pull the appropriate corporation model according to the string passed 
+    # from the transcript select box on index.html.
+    model = apps.get_model('Prometheus', corporation)
+
+    # Query the Database
+    answers_query_set = model.objects.filter(
+        date_of_call = transcript_date_for_db, question=0).order_by("name")
+    
+    c_exec_o_answer_list = list()
+    c_financ_o_answer_list = list()
+    c_exec_o_answer_length_list = list()
+    c_financ_o_answer_length_list = list()
+    c_exec_o_negative_words = 0
+    c_financ_o_negative_words = 0
+    c_exec_o_positive_words = 0
+    c_financ_o_positive_words = 0
+    c_exec_o_bigram_refs_to_general_knowledge = 0
+    c_exec_o_trigram_refs_to_general_knowledge = 0
+    c_financ_o_bigram_refs_to_general_knowledge = 0
+    c_financ_o_trigram_refs_to_general_knowledge = 0
+    c_exec_o_bigram_refs_to_shareholders_value = 0
+    c_exec_o_trigram_refs_to_shareholders_value = 0
+    c_financ_o_bigram_refs_to_shareholders_value = 0
+    c_financ_o_trigram_refs_to_shareholders_value = 0
+    c_exec_o_bigram_refs_to_value_creation = 0
+    c_financ_o_bigram_refs_to_value_creation = 0
+
+    # For each answer, we determine whether it correlates to the CEO or 
+    # CFO. Then, after tokenizing the text, removing punctuation, and 
+    # capitalizing each word, we split the text into bigrams and trigrams 
+    # for searching by phrase. From there, we compare n-grams (1, 2, or 3)
+    # to relevant lectionaries stored as .txt files to determine text
+    # characteristics (positive_words, general_knowledge, etc.). We then 
+    # calculate the appropriate proportional number and pass the data to
+    # the context for rendering.
+    for answer in answers_query_set:
+        print(answer.name)
+        if c_exec_o_list_regex.search(answer.name):
+            
+            # CEO Answers
+            c_exec_o_filtered_answer = clean_text(
+                answer.question_answer_text)
+            c_exec_o_answer_list.append(
+                c_exec_o_filtered_answer)
+            c_exec_o_answer_length_list.append(len(
+                c_exec_o_filtered_answer))    
+            
+            # CEO Bigrams
+            c_exec_o_bigrams = list(ngrams(
+                c_exec_o_filtered_answer, 2))
+            c_exec_o_bigrams_strings = ["%s %s" % bigram for 
+                bigram in c_exec_o_bigrams]
+            
+            # CEO Trigrams
+            c_exec_o_trigrams = list(ngrams(
+                c_exec_o_filtered_answer, 3))
+            c_exec_o_trigrams_strings = ["%s %s %s" % trigram for 
+                trigram in c_exec_o_trigrams]
+
+            with open('Prometheus/static/lexicons/negative_words.txt', 
+                'r') as file:
+                lines = [line.strip() for line in file.readlines()]
+                if set(c_exec_o_filtered_answer).intersection(lines):
+                    negative_intersection_length = \
+                        find_intersection_length(
+                        c_exec_o_filtered_answer, lines)
+                    c_exec_o_negative_words += \
+                        negative_intersection_length
+
+            with open('Prometheus/static/lexicons/positive_words.txt', 
+                'r') as file:
+                lines = [line.strip() for line in file.readlines()]
+                if set(c_exec_o_filtered_answer).intersection(lines):
+                    positive_intersection_length = \
+                        find_intersection_length(
+                        c_exec_o_filtered_answer, lines)
+                    c_exec_o_positive_words += \
+                        positive_intersection_length
+
+            with open('Prometheus/static/lexicons/general_knowledge.txt', 
+                'r') as file:
+                lines = [line.strip().upper() for line in file.readlines()]
+                if set(c_exec_o_bigrams_strings).intersection(lines):
+                    c_exec_o_bigram_refs_to_general_knowledge += 1
+                if set(c_exec_o_trigrams_strings).intersection(
+                    lines):
+                    c_exec_o_trigram_refs_to_general_knowledge += 1
+
+            with open('Prometheus/static/lexicons/shareholders_value.txt', 
+                'r') as file:
+                lines = [line.strip().upper() for line in file.readlines()]
+                if set(c_exec_o_bigrams_strings).intersection(
+                    lines):
+                    c_exec_o_bigram_refs_to_shareholders_value += 1
+                if set(c_exec_o_trigrams_strings).intersection(
+                    lines):
+                    c_exec_o_trigram_refs_to_shareholders_value += 1
+
+            with open('Prometheus/static/lexicons/value_creation.txt', 
+                'r') as file:
+                lines = [line.strip().upper() for line in 
+                    file.readlines()]
+                if set(c_exec_o_bigrams_strings).intersection(lines):
+                    c_exec_o_bigram_refs_to_value_creation += 1
+
+        if c_financ_o_list_regex.search(answer.name):
+
+            # CFO Answers            
+            c_financ_o_filtered_answer = clean_text(
+                answer.question_answer_text)
+            c_financ_o_answer_list.append(
+                c_financ_o_filtered_answer)
+            c_financ_o_answer_length_list.append(
+                len(c_financ_o_filtered_answer))
+
+            # CFO Bigrams
+            c_financ_o_bigrams = list(ngrams(
+                c_financ_o_filtered_answer, 2))
+            c_financ_o_bigrams_strings = ["%s %s" % bigram for 
+                bigram in c_financ_o_bigrams]
+            
+            # CFO Trigrams
+            c_financ_o_trigrams = list(ngrams(
+                c_financ_o_filtered_answer, 3))
+            c_financ_o_trigrams_strings = ["%s %s %s" % trigram for 
+                trigram in c_financ_o_trigrams]
+
+            with open('Prometheus/static/lexicons/negative_words.txt', 
+                'r') as file:
+                lines = [line.strip() for line in file.readlines()]
+                if set(c_financ_o_filtered_answer).intersection(lines):
+                    negative_intersection_length = \
+                        find_intersection_length(
+                        c_financ_o_filtered_answer, lines)
+                    c_financ_o_negative_words += \
+                        negative_intersection_length
+
+            with open('Prometheus/static/lexicons/positive_words.txt', 
+                'r') as file:
+                lines = [line.strip() for line in file.readlines()]
+                if set(c_financ_o_filtered_answer).intersection(lines):
+                    positive_intersection_length = \
+                        find_intersection_length(
+                        c_financ_o_filtered_answer, lines)
+                    c_financ_o_positive_words += \
+                        positive_intersection_length
+
+            with open('Prometheus/static/lexicons/general_knowledge.txt', 
+                'r') as file:
+                lines = [line.strip().upper() for line in file.readlines()]
+                if set(c_financ_o_bigrams_strings).intersection(lines):
+                    c_financ_o_bigram_refs_to_general_knowledge += 1
+                if set(c_financ_o_trigrams_strings).intersection(lines):
+                    c_financ_o_trigram_refs_to_general_knowledge += 1
+
+            with open('Prometheus/static/lexicons/shareholders_value.txt', 
+                'r') as file:
+                lines = [line.strip().upper() for line in file.readlines()]
+                if set(c_financ_o_bigrams_strings).intersection(lines):
+                    c_financ_o_bigram_refs_to_shareholders_value += 1
+                if set(c_financ_o_trigrams_strings).intersection(lines):
+                    c_financ_o_trigram_refs_to_shareholders_value += 1
+
+            with open('Prometheus/static/lexicons/value_creation.txt', 
+                'r') as file:
+                lines = [line.strip().upper() for line in file.readlines()]
+                if set(c_financ_o_bigrams_strings).intersection(lines): 
+                    c_financ_o_bigram_refs_to_value_creation += 1
+
+    c_exec_o_answer_length_sum = sum(c_exec_o_answer_length_list)
+    c_financ_o_answer_length_sum = sum(c_financ_o_answer_length_list)
+
+    # In the following try/except blocks, I only account for the absence of the 
+    # CEO from the transcript. I want to be alerted to the absence of the CFO
+    # I know of transcripts that lack the CEO speaking. I have not found an 
+    # instance in which a CFO does not speak on an earnings call. In fact, I 
+    # cannot think of a reasonable explanation for such an absence. The most 
+    # reasonable explanation of an error raising due to the lack of data from 
+    # a CFO here is that I have not properly formatted the opening regex above
+    # to account for the different spellings of CFOs names (Tom vs. Thomas, for
+    # instance). Thus, I would like the program to throw an error so I can 
+    # adjust the preceding code as needed.
+    
+    # Median
     try:
-        # Here we pull the transcript name from the select box to get the 
-        # relevant data we will use to render the page.
-        transcript = request.GET['transcript']
-        corporation = transcript.split('-')[0]
-        transcript_date = transcript.split('-')[1]
+        c_exec_o_answer_length_median = median(
+            c_exec_o_answer_length_list)
+    except ValueError:
+        c_exec_o_answer_length_median = 0
+    c_financ_o_answer_length_median = median(c_financ_o_answer_length_list) 
+    
+    # Negative Words
+    try:
+        c_exec_o_negative_proportion = c_exec_o_negative_words / \
+            c_exec_o_answer_length_sum
+    except ZeroDivisionError:
+        c_exec_o_negative_proportion = 0
+    c_financ_o_negative_proportion = c_financ_o_negative_words / \
+        c_financ_o_answer_length_sum  
 
-        # Transform the date both for the SQL query and for display on the 
-        # page.
-        transcript_date = datetime.datetime.strptime(
-            (transcript_date), "%d %B %y")
-        transcript_date_for_db = datetime.datetime.strftime(
-            (transcript_date), "%Y-%m-%d")
-        transcript_date_for_display = datetime.datetime.strftime(
-            (transcript_date), "%B %d, %Y")
-
-        # Pull the appropriate corporation model according to the string passed 
-        # from the transcript select box on index.html.
-        model = apps.get_model('Prometheus', corporation)
-
-        answers_query_set = model.objects.filter(
-            date_of_call = transcript_date_for_db, question=0).order_by("name")
-        
-        number_of_answers = len(answers_query_set)
-        c_exec_o_answer_list = list()
-        c_financ_o_answer_list = list()
-        c_exec_o_answer_length_list = list()
-        c_financ_o_answer_length_list = list()
-        c_exec_o_negative_words = 0
-        c_financ_o_negative_words = 0
-        c_exec_o_positive_words = 0
-        c_financ_o_positive_words = 0
-        c_exec_o_bigram_refs_to_general_knowledge = 0
-        c_exec_o_trigram_refs_to_general_knowledge = 0
-        c_financ_o_bigram_refs_to_general_knowledge = 0
-        c_financ_o_trigram_refs_to_general_knowledge = 0
-        c_exec_o_bigram_refs_to_shareholders_value = 0
-        c_exec_o_trigram_refs_to_shareholders_value = 0
-        c_financ_o_bigram_refs_to_shareholders_value = 0
-        c_financ_o_trigram_refs_to_shareholders_value = 0
-        c_exec_o_bigram_refs_to_value_creation = 0
-        c_financ_o_bigram_refs_to_value_creation = 0
-
-        # For each answer, we determine whether it correlates to the CEO or 
-        # CFO. Then, after tokenizing the text, removing punctuation, and 
-        # capitalizing each word, we split the text into bigrams and trigrams 
-        # for searching by phrase. From there, we compare n-grams (1, 2, or 3)
-        # to relevant lectionaries stored as .txt files to determine text
-        # characteristics (positive_words, general_knowledge, etc.). We then 
-        # calculate the appropriate proportional number and pass the data to
-        # the context for rendering.
-        for answer in answers_query_set:
-            if c_exec_o_list_regex.search(answer.name):
-                
-                c_exec_o_filtered_answer = clean_text(
-                    answer.question_answer_text)
-                c_exec_o_answer_list.append(
-                    c_exec_o_filtered_answer)
-                c_exec_o_answer_length_list.append(len(
-                    c_exec_o_filtered_answer))    
-                
-                c_exec_o_bigrams = list(ngrams(
-                    c_exec_o_filtered_answer, 2))
-                c_exec_o_bigrams_strings = ["%s %s" % bigram for 
-                    bigram in c_exec_o_bigrams]
-                c_exec_o_trigrams = list(ngrams(
-                    c_exec_o_filtered_answer, 3))
-                c_exec_o_trigrams_strings = ["%s %s %s" % trigram for 
-                    trigram in c_exec_o_trigrams]
-
-                with open('Prometheus/static/lexicons/negative_words.txt', 
-                    'r') as file:
-                    lines = [line.strip() for line in file.readlines()]
-                    if set(c_exec_o_filtered_answer).intersection(lines):
-                        negative_intersection_length = \
-                            find_intersection_length(
-                            c_exec_o_filtered_answer, lines)
-                        c_exec_o_negative_words += \
-                            negative_intersection_length
-
-                with open('Prometheus/static/lexicons/positive_words.txt', 
-                    'r') as file:
-                    lines = [line.strip() for line in file.readlines()]
-                    if set(c_exec_o_filtered_answer).intersection(lines):
-                        positive_intersection_length = \
-                            find_intersection_length(
-                            c_exec_o_filtered_answer, lines)
-                        c_exec_o_positive_words += \
-                            positive_intersection_length
-
-                with open('Prometheus/static/lexicons/general_knowledge.txt', 
-                    'r') as file:
-                    lines = [line.strip().upper() for line in 
-                        file.readlines()]
-                    if set(c_exec_o_bigrams_strings).intersection(
-                        lines):
-                        c_exec_o_bigram_refs_to_general_knowledge \
-                        += 1
-                    if set(c_exec_o_trigrams_strings).intersection(
-                        lines):
-                        c_exec_o_trigram_refs_to_general_knowledge \
-                        += 1
-
-                with open('Prometheus/static/lexicons/shareholders_value.txt', 
-                    'r') as file:
-                    lines = [line.strip().upper() for line in 
-                        file.readlines()]
-                    if set(c_exec_o_bigrams_strings).intersection(
-                        lines):
-                        c_exec_o_bigram_refs_to_shareholders_value \
-                        += 1
-                    if set(c_exec_o_trigrams_strings).intersection(
-                        lines):
-                        c_exec_o_trigram_refs_to_shareholders_value \
-                        += 1
-
-                with open('Prometheus/static/lexicons/value_creation.txt', 
-                    'r') as file:
-                    lines = [line.strip().upper() for line in 
-                        file.readlines()]
-                    if set(c_exec_o_bigrams_strings).intersection(
-                        lines):
-                        c_exec_o_bigram_refs_to_value_creation \
-                        += 1
- 
-            if c_financ_o_list_regex.search(answer.name):
-                
-                c_financ_o_filtered_answer = clean_text(
-                    answer.question_answer_text)
-                c_financ_o_answer_list.append(
-                    c_financ_o_filtered_answer)
-                c_financ_o_answer_length_list.append(
-                    len(c_financ_o_filtered_answer))
-
-                c_financ_o_bigrams = list(ngrams(
-                    c_financ_o_filtered_answer, 2))
-                c_financ_o_bigrams_strings = ["%s %s" % bigram for 
-                    bigram in c_financ_o_bigrams]
-                c_financ_o_trigrams = list(ngrams(
-                    c_financ_o_filtered_answer, 3))
-                c_financ_o_trigrams_strings = ["%s %s %s" % trigram for 
-                    trigram in c_financ_o_trigrams]
-
-                with open('Prometheus/static/lexicons/negative_words.txt', 
-                    'r') as file:
-                    lines = [line.strip() for line in file.readlines()]
-                    if set(c_financ_o_filtered_answer).intersection(lines):
-                        negative_intersection_length = \
-                            find_intersection_length(
-                            c_financ_o_filtered_answer, lines)
-                        c_financ_o_negative_words += \
-                            negative_intersection_length
-
-                with open('Prometheus/static/lexicons/positive_words.txt', 
-                    'r') as file:
-                    lines = [line.strip() for line in file.readlines()]
-                    if set(c_financ_o_filtered_answer).intersection(lines):
-                        positive_intersection_length = \
-                            find_intersection_length(
-                            c_financ_o_filtered_answer, lines)
-                        c_financ_o_positive_words += \
-                            positive_intersection_length
-
-                with open('Prometheus/static/lexicons/general_knowledge.txt', 
-                    'r') as file:
-                    lines = [line.strip().upper() for line in file.readlines()]
-                    if set(c_financ_o_bigrams_strings).intersection(lines):
-                        c_financ_o_bigram_refs_to_general_knowledge \
-                        += 1
-                    if set(c_financ_o_trigrams_strings).intersection(lines):
-                        c_financ_o_trigram_refs_to_general_knowledge \
-                        += 1
-
-                with open('Prometheus/static/lexicons/shareholders_value.txt', 
-                    'r') as file:
-                    lines = [line.strip().upper() for line in file.readlines()]
-                    if set(c_financ_o_bigrams_strings).intersection(lines):
-                        c_financ_o_bigram_refs_to_shareholders_value \
-                        += 1
-                    if set(c_financ_o_trigrams_strings).intersection(lines):
-                        c_financ_o_trigram_refs_to_shareholders_value\
-                        += 1
-
-                with open('Prometheus/static/lexicons/value_creation.txt', 
-                    'r') as file:
-                    lines = [line.strip().upper() for line in 
-                        file.readlines()]
-                    if set(c_financ_o_bigrams_strings).intersection(
-                        lines):
-                        c_financ_o_bigram_refs_to_value_creation \
-                        += 1
-
-        c_exec_o_answer_length_sum = sum(c_exec_o_answer_length_list)
-        c_financ_o_answer_length_sum = sum(c_financ_o_answer_length_list)
-
-        try:
-            c_exec_o_answer_length_median = median(
-                c_exec_o_answer_length_list)
-        except ValueError:
-            c_exec_o_answer_length_median = "N/A"
-
-        try:
-            c_financ_o_answer_length_median = median(
-                c_financ_o_answer_length_list)
-        except ValueError:
-            c_financ_o_answer_length_median = "N/A"  
-
-    except KeyError:
-        corporation = ""
-        pass
-
-    c_exec_o_negative_proportion = \
-        c_exec_o_negative_words / \
-        c_exec_o_answer_length_sum
-    c_financ_o_negative_proportion = \
-        c_financ_o_negative_words / \
+    # Positive Words
+    try:    
+        c_exec_o_positive_proportion = c_exec_o_positive_words / \
+            c_exec_o_answer_length_sum
+    except ZeroDivisionError:
+        c_exec_o_positive_proportion = 0
+    c_financ_o_positive_proportion = c_financ_o_positive_words / \
         c_financ_o_answer_length_sum
-    c_exec_o_positive_proportion = \
-        c_exec_o_positive_words / \
-        c_exec_o_answer_length_sum
-    c_financ_o_positive_proportion = \
-        c_financ_o_positive_words / \
-        c_financ_o_answer_length_sum
-    c_exec_o_proportion_refs_to_general_knowledge = \
-        (c_exec_o_bigram_refs_to_general_knowledge + 
-        c_exec_o_trigram_refs_to_general_knowledge) / \
-        len(c_exec_o_answer_list)
+    
+    # General Knowledge
+    try:
+        c_exec_o_proportion_refs_to_general_knowledge = \
+            (c_exec_o_bigram_refs_to_general_knowledge + 
+            c_exec_o_trigram_refs_to_general_knowledge) / \
+            len(c_exec_o_answer_list)
+    except ZeroDivisionError:
+        c_exec_o_proportion_refs_to_general_knowledge = 0
     c_financ_o_proportion_refs_to_general_knowledge = \
         (c_financ_o_bigram_refs_to_general_knowledge + 
         c_financ_o_trigram_refs_to_general_knowledge) / \
         len(c_financ_o_answer_list)
-    c_exec_o_proportion_refs_to_shareholders_value = \
-        (c_exec_o_bigram_refs_to_shareholders_value + 
-        c_exec_o_trigram_refs_to_shareholders_value) / \
-        len(c_exec_o_answer_list)
+    
+    # Shareholders Value
+    try:
+        c_exec_o_proportion_refs_to_shareholders_value = \
+            (c_exec_o_bigram_refs_to_shareholders_value + 
+            c_exec_o_trigram_refs_to_shareholders_value) / \
+            len(c_exec_o_answer_list)
+    except ZeroDivisionError:
+        c_exec_o_proportion_refs_to_shareholders_value = 0
     c_financ_o_proportion_refs_to_shareholders_value = \
         (c_financ_o_bigram_refs_to_shareholders_value + 
         c_financ_o_trigram_refs_to_shareholders_value) / \
         len(c_financ_o_answer_list)
-    c_exec_o_proportion_refs_to_value_creation = \
-        c_exec_o_bigram_refs_to_value_creation / \
-        len(c_exec_o_answer_list)
+    
+    # Value Creation
+    try:
+        c_exec_o_proportion_refs_to_value_creation = \
+            c_exec_o_bigram_refs_to_value_creation / \
+            len(c_exec_o_answer_list)
+    except ZeroDivisionError:
+        c_exec_o_proportion_refs_to_value_creation = 0
     c_financ_o_proportion_refs_to_value_creation = \
         c_financ_o_bigram_refs_to_value_creation / \
         len(c_financ_o_answer_list)
