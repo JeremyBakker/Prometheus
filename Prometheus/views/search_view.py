@@ -60,12 +60,12 @@ def search (request):
         c_financial_o_answer_list = list()
         c_executive_o_answer_length_list = list()
         c_financial_o_answer_length_list = list()
-        number_of_c_executive_o_negative_words = 0
-        number_of_c_financial_o_negative_words = 0
-        number_of_c_executive_o_positive_words = 0
-        number_of_c_financial_o_positive_words = 0
-        bigram_references_to_general_knowledge = 0
-        trigram_references_to_general_knowledge = 0
+        c_executive_o_negative_words = 0
+        c_financial_o_negative_words = 0
+        c_executive_o_positive_words = 0
+        c_financial_o_positive_words = 0
+        c_executive_o_bigram_references_to_general_knowledge = 0
+        c_executive_o_trigram_references_to_general_knowledge = 0
 
         # For each answer, we determine whether it correlates to the CEO or 
         # CFO. Then, after tokenizing the text, removing punctuation, and 
@@ -75,16 +75,20 @@ def search (request):
         # characteristics (positive_words, general_knowledge, etc.). 
         for answer in answers_query_set:
             if c_executive_o_list_regex.search(answer.name):                
-                filtered_answer = clean_text(answer.question_answer_text)
-                c_executive_o_answer_list.append(filtered_answer)
-                c_executive_o_answer_length_list.append(len(filtered_answer))    
+                c_executive_o_filtered_answer = clean_text(
+                    answer.question_answer_text)
+                c_executive_o_answer_list.append(
+                    c_executive_o_filtered_answer)
+                c_executive_o_answer_length_list.append(len(
+                    c_executive_o_filtered_answer))    
                 
-                bigrams = list(ngrams(filtered_answer, 2))
-                bigrams_strings = ["%s %s" % bigram for 
-                    bigram in bigrams]
-                trigrams = list(ngrams(filtered_answer, 3))
-                trigrams_strings = ["%s %s %s" % trigram for 
-                    trigram in trigrams]
+                c_executive_o_bigrams = list(ngrams(
+                    c_executive_o_filtered_answer, 2))
+                c_executive_o_bigrams_strings = ["%s %s" % bigram for 
+                    bigram in c_executive_o_bigrams]
+                c_executive_o_trigrams = list(ngrams(filtered_answer, 3))
+                c_executive_o_trigrams_strings = ["%s %s %s" % trigram for 
+                    trigram in c_executive_o_trigrams]
 
                 with open('Prometheus/static/lexicons/negative_words.txt', 
                     'r') as file:
@@ -92,7 +96,7 @@ def search (request):
                     if set(filtered_answer).intersection(lines):
                         negative_intersection_length = \
                             find_intersection_length(filtered_answer, lines)
-                        number_of_c_executive_o_negative_words += \
+                        c_executive_o_negative_words += \
                             negative_intersection_length
 
                 with open('Prometheus/static/lexicons/positive_words.txt', 
@@ -101,16 +105,18 @@ def search (request):
                     if set(filtered_answer).intersection(lines):
                         positive_intersection_length = \
                             find_intersection_length(filtered_answer, lines)
-                        number_of_c_executive_o_positive_words += \
+                        c_executive_o_positive_words += \
                             positive_intersection_length
 
                 with open('Prometheus/static/lexicons/general_knowledge.txt', 
                     'r') as file:
                     lines = [line.strip().upper() for line in file.readlines()]
-                    if set(bigrams_strings).intersection(lines):
-                        bigram_references_to_general_knowledge += 1
-                    if set(trigrams_strings).intersection(lines):
-                        trigram_references_to_general_knowledge += 1
+                    if set(c_executive_o_bigrams_strings).intersection(lines):
+                        c_executive_o_bigram_references_to_general_knowledge \
+                        += 1
+                    if set(c_executive_o_trigrams_strings).intersection(lines):
+                        c_executive_o_trigram_references_to_general_knowledge \
+                        += 1
  
             if c_financial_o_list_regex.search(answer.name):
                 filtered_answer = clean_text(answer.question_answer_text)
@@ -124,7 +130,7 @@ def search (request):
                     if set(filtered_answer).intersection(lines):
                         negative_intersection_length = \
                             find_intersection_length(filtered_answer, lines)
-                        number_of_c_financial_o_negative_words += \
+                        c_financial_o_negative_words += \
                             negative_intersection_length
 
                 with open('Prometheus/static/lexicons/positive_words.txt', 
@@ -133,7 +139,7 @@ def search (request):
                     if set(filtered_answer).intersection(lines):
                         positive_intersection_length = \
                             find_intersection_length(filtered_answer, lines)
-                        number_of_c_financial_o_positive_words += \
+                        c_financial_o_positive_words += \
                             positive_intersection_length
 
         c_executive_o_answer_length_sum = sum(c_executive_o_answer_length_list)
@@ -156,20 +162,20 @@ def search (request):
         pass
 
     c_executive_o_negative_proportion = \
-        number_of_c_executive_o_negative_words / \
+        c_executive_o_negative_words / \
         c_executive_o_answer_length_sum
     c_financial_o_negative_proportion = \
-        number_of_c_financial_o_negative_words / \
+        c_financial_o_negative_words / \
         c_financial_o_answer_length_sum
     c_executive_o_positive_proportion = \
-        number_of_c_executive_o_positive_words / \
+        c_executive_o_positive_words / \
         c_executive_o_answer_length_sum
     c_financial_o_positive_proportion = \
-        number_of_c_financial_o_positive_words / \
+        c_financial_o_positive_words / \
         c_financial_o_answer_length_sum
     c_executive_o_percentage_references_to_general_knowledge = \
-        (bigram_references_to_general_knowledge + 
-        trigram_references_to_general_knowledge) / \
+        (c_executive_o_bigram_references_to_general_knowledge + 
+        c_executive_o_trigram_references_to_general_knowledge) / \
         len(c_executive_o_answer_list)
 
     template = 'index.html'
