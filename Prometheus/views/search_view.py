@@ -26,19 +26,24 @@ def search (request):
     # transcripts lack this data in any reliable pattern to pull when parsing. 
     # Thus, a hard-coded list is necessary for now. Each row correlates to a
     # company: Apple, Adobe, Amazon, HP, IBM, Microsoft, Oracle, and Samsung.
-    # Within this data set, there is only one instance of a single name 
+    # Within this data set, there are two instances of a single name 
     # appearing in two different roles over time. Tim Cook served as an EVP and
     # COO at Apple before becoming CEO in 2011. I include him in the CEO list
     # because Steve Jobs rarely, if ever, spoke on earnings calls. Tim Cook 
-    # filled that role in practice even before he became CEO.
+    # filled that role in practice even before he became CEO. Catherine Lesjak
+    # briefly served as interim CEO of HP while maintaining her position as 
+    # CFO. I leave her exclusively in the CFO category since she never
+    # abandoned that role.
     c_exec_o_list = [
     '^(Steve)? ?Jobs', '^(Tim)?(othy)? ?Cook', 
     '^(Bruce)? ?Chizen', '^(Shantanu)? ?Narayen',
-    '(Jeff)?(rey)? ?P?.? ?Bezos']
+    '(Jeff)?(rey)? ?P?.? ?Bezos',
+    '^(Mark)? ?(V\.)?Hurd', '^(L.o)? ?Apotheker']
     c_financ_o_list = [
     '^(Peter)? ?Oppenheimer', '^(Luca)? ?Maestri',
     '^(Murray)? ?Demo', '^(Mark)? ?Garrett',
-    '^Th?(om)?(as)? (J\.)? ?Szkutak' 
+    '^Th?(om)?(as)? (J\.)? ?Szkutak',
+    '^(Bob)? ?Wayman,', '^(Cath)?(erine)?(ie)? ?Lesjak' 
     ]
     c_exec_o_list_regex = re.compile(r'\b(?:%s)\b' % '|'.join(
         c_exec_o_list))
@@ -96,7 +101,6 @@ def search (request):
     # calculate the appropriate proportional number and pass the data to
     # the context for rendering.
     for answer in answers_query_set:
-        print(answer.name)
         if c_exec_o_list_regex.search(answer.name):
             
             # CEO Answers
