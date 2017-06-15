@@ -10,9 +10,9 @@
 <body>
 <div class="container">
     <div class="row valign-wrapper" style="margin-bottom: 5px">
-        <h1 class="col s8" style="margin-bottom: 0; margin-top: 20px">Prometheus</h1>
+        <a href="/" style="color: black"><h1 class="col s8" style="margin-bottom: 0; margin-top: 20px">Prometheus</h1></a>
         <btn black
-        <a class='dropdown-button btn black' data-hover="true" data-belowOrigin="true" href='#' data-activates='dropdown' class="col s4">Select a Corporation</a>
+        <a class='dropdown-button btn black' data-hover="true" data-belowOrigin="true" data-activates='dropdown' class="col s4">Select a Corporation</a>
         <ul id='dropdown' class='dropdown-content'>
             <li id="li"><a href="/AAPL" style="color:black">Apple</a></li>
             <li class="divider"></li>
@@ -85,19 +85,29 @@
 
                 </tr>
                 <tr>
-                    <td>Positive Words</td>
+                    <td>Proportion of Positive Words</td>
                     <td>{{cEo_positive}}</td>
                     <td>{{cFo_positive}}</td>
                 </tr>
                 <tr>
-                    <td>Negative Words</td>
+                    <td>Proportion of Negative Words</td>
                     <td>{{cEo_negative}}</td>
                     <td>{{cFo_negative}}</td>
                 </tr>
                 <tr>
-                    <td>Percentage of Responses with References to General Knowledge</td>
+                    <td>Proportion of Responses with a Reference to General Knowledge</td>
                     <td>{{cEo_knowledge}}</td>
                     <td>{{cFo_knowledge}}</td>
+                </tr>
+                <tr>
+                    <td>Proportion of Responses with a Reference to Value for Shareholders</td>
+                    <td>{{cEo_shareholders_value}}</td>
+                    <td>{{cFo_shareholders_value}}</td>
+                </tr>
+                <tr>
+                    <td>Proportion of Responses with a Reference to Value Creation</td>
+                    <td>{{cEo_value_creation}}</td>
+                    <td>{{cFo_value_creation}}</td>
                 </tr>
             </tbody>
         </table>
