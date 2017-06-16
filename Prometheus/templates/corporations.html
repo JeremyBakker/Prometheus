@@ -1,3 +1,11 @@
+<!-- This script qua html renders individual corporations' 
+earnings data on the D3 svg. It also adds the y-axis on the right 
+side of the graph. I included this script as an html tag because 
+I wanted to have the program access the script directly when made 
+visible to the template via the Django variable rather than 
+through a variable that points to a script tag that points to a 
+file. -->
+
 <script>
     d3.tsv('../static/data/{{corporation}}.tsv', function(error, data) {
         data.forEach(function(d) {
