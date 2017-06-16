@@ -4,13 +4,13 @@ side of the graph. I included this script as an html tag because
 I wanted to have the program access the script directly when made 
 visible to the template via the Django variable rather than 
 through a variable that points to a script tag that points to a 
-file. -->
+javascript file. -->
 
 <script>
     d3.tsv('../static/data/{{corporation}}.tsv', function(error, data) {
         data.forEach(function(d) {
             d.date = parseTime(d.date);
-            d.close = +d.close;
+            d.close = Math.round(+d.close);
             company = d.company;
         });
 

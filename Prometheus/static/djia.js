@@ -30,7 +30,7 @@ var company
 d3.tsv('../static/data/djia.tsv', function(error, data) {
     data.forEach(function(d) {
         d.date = parseTime(d.date);
-        d.close = +d.close;
+        d.close = Math.round(+d.close);
         company = d.company
     });
 
@@ -122,9 +122,17 @@ svg.append("rect")
 
 svg.append("text")
     .attr("transform",
+        "translate(" + (width - 266) + " ," + 
+        (height + margin.top - 40) + ")")
+    .style("text-anchor", "middle")
+    .style("font-size", ".8em")
+    .text("*  Earnings numbers in the tooltip have been rounded to the nearest whole number.");
+
+svg.append("text")
+    .attr("transform",
         "translate(" + (width/2) + " ," + 
         (margin.top - 35) + ")")
     .style("text-anchor", "middle")
     .style("font-size", "2em")
-    .text("Corporate Earnings Over Time");
+    .text("Corporate Earnings Over Time*");
 });
