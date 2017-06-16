@@ -129,19 +129,18 @@ def search (request):
                 lines = [line.strip() for line in file.readlines()]
                 if set(c_exec_o_filtered_answer).intersection(lines):
                     negative_intersection_length = \
-                        find_number_of_sentiment_words(
+                        find_number_of_shared_words(
                         c_exec_o_filtered_answer, lines, 
                         number_of_shared_words)
                     c_exec_o_negative_words += \
                         negative_intersection_length
-                    print("negative", c_exec_o_negative_words)
 
             with open('Prometheus/static/lexicons/positive_words.txt', 
                 'r') as file:
                 lines = [line.strip() for line in file.readlines()]
                 if set(c_exec_o_filtered_answer).intersection(lines):
                     positive_intersection_length = \
-                        find_number_of_sentiment_words(
+                        find_number_of_shared_words(
                         c_exec_o_filtered_answer, lines, 
                         number_of_shared_words)
                     c_exec_o_positive_words += \
@@ -200,7 +199,7 @@ def search (request):
                 lines = [line.strip() for line in file.readlines()]
                 if set(c_financ_o_filtered_answer).intersection(lines):
                     negative_intersection_length = \
-                        find_number_of_sentiment_words(
+                        find_number_of_shared_words(
                         c_financ_o_filtered_answer, lines, 
                         number_of_shared_words)
                     c_financ_o_negative_words += \
@@ -211,7 +210,7 @@ def search (request):
                 lines = [line.strip() for line in file.readlines()]
                 if set(c_financ_o_filtered_answer).intersection(lines):
                     positive_intersection_length = \
-                        find_number_of_sentiment_words(
+                        find_number_of_shared_words(
                         c_financ_o_filtered_answer, lines, 
                         number_of_shared_words)
                     c_financ_o_positive_words += \
@@ -316,6 +315,24 @@ def search (request):
         c_financ_o_bigram_refs_to_value_creation / \
         len(c_financ_o_answer_list)
 
+    # First Person Singular Pronoun
+    c_exec_o_number_of_i_instances = 0
+    c_financ_o_number_of_i_instances = 0
+    i = re.compile('I ')
+    for answer in c_exec_o_answer_list:
+        string_answer = (' ').join(answer)
+        if i.search(string_answer):
+            c_exec_o_number_of_i_instances += len([m.start() for m in re.finditer(i, string_answer)])
+    try:
+        proportion_c_exec_o_number_of_i_instances = \
+            round(c_exec_o_number_of_i_instances/c_exec_o_answer_length_sum, 4)
+    except ZeroDivisionError:
+        proportion_c_exec_o_number_of_i_instances = 0
+    # for answer in c_financ_o_answer_list:
+    #     string_answer = (' ').join(answer)
+    #     if i.search(string_answer):
+            
+
     template = 'index.html'
     context = {
         "search_view": True, 
@@ -340,7 +357,8 @@ def search (request):
         "cEo_value_creation": round(
             c_exec_o_proportion_refs_to_value_creation, 4),
         "cFo_value_creation": round(
-            c_financ_o_proportion_refs_to_value_creation, 4)
+            c_financ_o_proportion_refs_to_value_creation, 4),
+        "cEo_I": proportion_c_exec_o_number_of_i_instances
         }
 
     return render(request, template, context)
@@ -352,7 +370,7 @@ def clean_text(question_answer_text):
         without_punctuation.match(word)]
     return filtered_answer
 
-def find_number_of_sentiment_words(filtered_answer, lines, 
+def find_number_of_shared_words(filtered_answer, lines, 
     number_of_shared_words):
     shared_words = list()
     for word in filtered_answer:

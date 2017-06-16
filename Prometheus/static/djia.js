@@ -89,7 +89,7 @@ svg.selectAll("dot")
 svg.append("text")             
     .attr("transform",
         "translate(" + (width/2) + " ," + 
-        (height + margin.top + 25) + ")")
+        (height + margin.top + 15) + ")")
     .style("text-anchor", "middle")
     .style("font-size", ".8em")
     .text("Date");
@@ -122,11 +122,11 @@ svg.append("rect")
 
 svg.append("text")
     .attr("transform",
-        "translate(" + (width - 266) + " ," + 
-        (height + margin.top - 40) + ")")
+        "translate(" + (width -136) + " ," + 
+        (height + margin.top + 37) + ")")
     .style("text-anchor", "middle")
     .style("font-size", ".8em")
-    .text("*  Earnings numbers in the tooltip have been rounded to the nearest whole number.");
+    .text("*  Earnings rounded to the nearest whole number.");
 
 svg.append("text")
     .attr("transform",
