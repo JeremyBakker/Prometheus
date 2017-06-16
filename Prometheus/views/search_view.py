@@ -77,6 +77,7 @@ def search (request):
     c_financ_o_answer_list = list()
     c_exec_o_answer_length_list = list()
     c_financ_o_answer_length_list = list()
+    number_of_shared_words = 0
     c_exec_o_negative_words = 0
     c_financ_o_negative_words = 0
     c_exec_o_positive_words = 0
@@ -128,18 +129,21 @@ def search (request):
                 lines = [line.strip() for line in file.readlines()]
                 if set(c_exec_o_filtered_answer).intersection(lines):
                     negative_intersection_length = \
-                        find_intersection_length(
-                        c_exec_o_filtered_answer, lines)
+                        find_number_of_sentiment_words(
+                        c_exec_o_filtered_answer, lines, 
+                        number_of_shared_words)
                     c_exec_o_negative_words += \
                         negative_intersection_length
+                    print("negative", c_exec_o_negative_words)
 
             with open('Prometheus/static/lexicons/positive_words.txt', 
                 'r') as file:
                 lines = [line.strip() for line in file.readlines()]
                 if set(c_exec_o_filtered_answer).intersection(lines):
                     positive_intersection_length = \
-                        find_intersection_length(
-                        c_exec_o_filtered_answer, lines)
+                        find_number_of_sentiment_words(
+                        c_exec_o_filtered_answer, lines, 
+                        number_of_shared_words)
                     c_exec_o_positive_words += \
                         positive_intersection_length
 
@@ -196,8 +200,9 @@ def search (request):
                 lines = [line.strip() for line in file.readlines()]
                 if set(c_financ_o_filtered_answer).intersection(lines):
                     negative_intersection_length = \
-                        find_intersection_length(
-                        c_financ_o_filtered_answer, lines)
+                        find_number_of_sentiment_words(
+                        c_financ_o_filtered_answer, lines, 
+                        number_of_shared_words)
                     c_financ_o_negative_words += \
                         negative_intersection_length
 
@@ -206,8 +211,9 @@ def search (request):
                 lines = [line.strip() for line in file.readlines()]
                 if set(c_financ_o_filtered_answer).intersection(lines):
                     positive_intersection_length = \
-                        find_intersection_length(
-                        c_financ_o_filtered_answer, lines)
+                        find_number_of_sentiment_words(
+                        c_financ_o_filtered_answer, lines, 
+                        number_of_shared_words)
                     c_financ_o_positive_words += \
                         positive_intersection_length
 
@@ -240,7 +246,7 @@ def search (request):
     # CEO from the transcript. I want to be alerted to the absence of the CFO.
     # I know of transcripts that lack the CEO speaking. I have not found an 
     # instance in which a CFO does not speak on an earnings call. In fact, I 
-    # cannot think of a reasonable explanation for such an absence. The most 
+    # cannot think of a logical reason for such an absence. The most 
     # reasonable explanation of an error raising due to the lack of data from 
     # a CFO here is that I have not properly formatted the opening regex above
     # to account for the different spellings of CFOs names (Tom vs. Thomas, for
@@ -346,7 +352,11 @@ def clean_text(question_answer_text):
         without_punctuation.match(word)]
     return filtered_answer
 
-def find_intersection_length(filtered_answer, lines):
-    intersection = set(filtered_answer).intersection(lines)
-    intersection_length = len(intersection)
-    return intersection_length
+def find_number_of_sentiment_words(filtered_answer, lines, 
+    number_of_shared_words):
+    shared_words = list()
+    for word in filtered_answer:
+        if word in lines:
+            shared_words.append(word)
+            number_of_shared_words += len(shared_words)
+    return number_of_shared_words
