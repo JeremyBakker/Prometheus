@@ -237,7 +237,7 @@ def search (request):
     c_financ_o_answer_length_sum = sum(c_financ_o_answer_length_list)
 
     # In the following try/except blocks, I only account for the absence of the 
-    # CEO from the transcript. I want to be alerted to the absence of the CFO
+    # CEO from the transcript. I want to be alerted to the absence of the CFO.
     # I know of transcripts that lack the CEO speaking. I have not found an 
     # instance in which a CFO does not speak on an earnings call. In fact, I 
     # cannot think of a reasonable explanation for such an absence. The most 

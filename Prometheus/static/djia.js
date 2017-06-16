@@ -1,3 +1,6 @@
+// This script renders the D3 svg, the x axis and label, the left y-axis and
+// label, and the line graph for the Dow Jones Industrial Average.
+
 var margin = {top: 30, right: 65, bottom: 70, left: 60},
     width = 860 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;

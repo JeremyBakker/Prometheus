@@ -7,7 +7,14 @@ import glob
 import sqlite3
 import datetime
 
-# Find all the .pdf files
+
+'''
+This module parses PDFs of earnings call transcripts and inserts the data into 
+a SQLite3 database. It runs independently. The code in build_db.py must be run
+first.
+'''
+
+# Find all the .pdf files stored in the named directory.
 files = glob.glob('Data/*/*.pdf')
 
 for file in files:
@@ -25,7 +32,6 @@ for file in files:
     text = process(file).decode()
     txt = io.StringIO(text)
     lines = txt.readlines()
-    # print(lines)
     
     # Grab the transcript date from the file name for the database entry below.
     transcript_date = str(file[-13:-4])
@@ -38,16 +44,13 @@ for file in files:
         lines) if re.search('Q ?U ?ESTION ?-?AND ?-?ANSWER ?-?SECTION\\n', item)]
     disclaimer_index = [index for index, item in enumerate(lines) if re.search(
         'Disclaimer', item)]
-    # try:
     question_and_answer_section = lines[question_and_answer_section_index[0]:
             disclaimer_index[0]]
-    # except IndexError:
-    #     question_and_answer_section = lines[407:
-    #         disclaimer_index[0]]
 
     # # Work with files produced from Q3 2011 until the present. The transcript 
     # # service marked each question in these files with a capital Q and a new 
-    # # line.
+    # # line. This feature will go live after June 23, 2017. The parsing 
+    # # continues on line 124.
     if "Q\n" in question_and_answer_section:
         pass
     #     # Find the dots that separate each question/answer block in the file
@@ -125,7 +128,6 @@ for file in files:
     # Work with files from Q1 2005 through Q2 2011 as available. The transcript
     # service marked each question in these files with an angle bracket and a 
     # capital Q.
-    
     elif re.search('<Q', str(question_and_answer_section)):
         # Find the copyright text at the end of each page and remove it
         copyright_indices = [index for index, copyright_text in enumerate(
@@ -150,9 +152,6 @@ for file in files:
         question_answer_indices = question_indices + answer_indices
         question_answer_indices.sort(key=int)
         
-        # Lists to be removed. Here for debugging.
-        question_list = []
-        answer_list = []
         # Loop through the question and answer section to grab the questions, 
         # answers, and conversation partners. Add them to the database.
         for index, value in enumerate(question_answer_indices):
@@ -186,9 +185,3 @@ for file in files:
                         question,  
                         transcript_date)
                 )
-        # with open('question.txt', 'a+') as write_file:
-        #     write_file.write(str(question_list))
-        # with open('answer.txt', 'a+') as write_file:
-        #     write_file.write(str(answer_list))
-
-        

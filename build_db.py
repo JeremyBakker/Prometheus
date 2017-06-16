@@ -1,6 +1,12 @@
 import sqlite3
 import glob
 
+
+'''
+This module builds the database for the data collected in parse.py. It runs
+independently.
+'''
+
 files = glob.glob('Data/*/*.pdf')
 
 corporation_set = set()
@@ -15,7 +21,6 @@ for file in files:
     corporation = file[parenthesis_index+1:hyphen_index]
 
     corporation_set.add(corporation)
-
 
 for corporation in corporation_set:
     print(corporation)
