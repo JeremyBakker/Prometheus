@@ -26,24 +26,45 @@ def search (request):
     # transcripts lack this data in any reliable pattern to pull when parsing. 
     # Thus, a hard-coded list is necessary for now. Each row correlates to a
     # company: Apple, Adobe, Amazon, HP, IBM, Microsoft, Oracle, and Samsung.
-    # Within this data set, there are two instances of a single name 
+    # Within this data set, there are three instances of a single name 
     # appearing in two different roles over time. Tim Cook served as an EVP and
     # COO at Apple before becoming CEO in 2011. I include him in the CEO list
     # because Steve Jobs rarely, if ever, spoke on earnings calls. Tim Cook 
     # filled that role in practice even before he became CEO. Catherine Lesjak
     # briefly served as interim CEO of HP while maintaining her position as 
     # CFO. I leave her exclusively in the CFO category since she never
-    # abandoned that role.
+    # abandoned that role. Safra Catz has served as President and CFO, the 
+    # the latter role multiple times. I leave her in the CFO category because
+    # Larry Ellison has been CEO during Catz's entire tenure. Samsung is a bit
+    # of an anomaly in this list. The corporation often had an executive vice
+    # president and several senior vice presidents of product lines on the 
+    # call. I categorized the EVP as CEO and the SVP as CFOs. Interpreters will
+    # need to consider this when comparing Samsung to other companies.
     c_exec_o_list = [
     '^(Steve)? ?Jobs', '^(Tim)?(othy)? ?Cook', 
     '^(Bruce)? ?Chizen', '^(Shantanu)? ?Narayen',
-    '(Jeff)?(rey)? ?P?.? ?Bezos',
-    '^(Mark)? ?(V\.)?Hurd', '^(L.o)? ?Apotheker']
+    '^(Jeff)?(rey)? ?P?.? ?Bezos',
+    '^(Mark)? ?(V\.)?Hurd', '^(L.o)? ?Apotheker',
+    '^(Sam)(uel)? ?(J\.)? ?Palmisano',
+    '^(Bill)? ?Gates',
+    '^(Lawrence)?(Larry)? ?(J\.)? ?Ellison',
+    '^(Dr.)? ?(Woo)? ?[Ss]+?(ik)? ?Chu'
+    ]
     c_financ_o_list = [
     '^(Peter)? ?Oppenheimer', '^(Luca)? ?Maestri',
     '^(Murray)? ?Demo', '^(Mark)? ?Garrett',
     '^Th?(om)?(as)? (J\.)? ?Szkutak',
-    '^(Bob)? ?Wayman,', '^(Cath)?(erine)?(ie)? ?Lesjak' 
+    '^(Bob)? ?Wayman', '^(Cath)?(erine)?(ie)? ?Lesjak',
+    '^(Mark)? ?Loughridge',
+    '^(Chris)?(topher)? ?(P\.)? ?Liddell', '^(Pete)(r)? ?Klein',
+    '^(Greg)?(ory)? ?(B\.)? ?Maffei', '^(Safra)? ?(A\.)? ?Catz?', 
+        '^(Jeff)?(rey)? ?Epstein', 
+    '^(Dr.)? ?(Yeong) ?[Dd]+?(uk)? ?Cho', '^(Dr.)? ?(David)? ?Steel', 
+        '(Il)? ?(Ung)? ?Kim', '^(Yeongho)? ?Kang', '^(Sangheung)? ?Shin',
+        '^(Namseong)? ?Cho?', '^(Hyungdo)? ?Kim', '^(Hwan)? ?Kim', 
+        '^(Yangkyu)? Kim?', '^(Myung)(kun)?(ho)? ?Kim', '^(Jungryul)? ?Lee', 
+        '^(You?ng-?[Hh]ee)? ?Lee', '^(Bongku)? ?Kang', '(Wanhoon)? ?Hong',
+        '^(Dr.)? (Youngcho)? ?Chi', '(Jaeyong)? ?Lee'
     ]
     c_exec_o_list_regex = re.compile(r'\b(?:%s)\b' % '|'.join(
         c_exec_o_list))
