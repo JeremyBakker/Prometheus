@@ -126,7 +126,7 @@ svg.append("text")
         (height + margin.top + 37) + ")")
     .style("text-anchor", "middle")
     .style("font-size", ".8em")
-    .text("*  Earnings rounded to the nearest whole number.");
+    .text("*  Earnings rounded to the nearest whole number");
 
 svg.append("text")
     .attr("transform",

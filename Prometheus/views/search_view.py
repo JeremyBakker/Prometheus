@@ -322,16 +322,22 @@ def search (request):
     for answer in c_exec_o_answer_list:
         string_answer = (' ').join(answer)
         if i.search(string_answer):
-            c_exec_o_number_of_i_instances += len([m.start() for m in re.finditer(i, string_answer)])
+            c_exec_o_number_of_i_instances += len([m.start() for m in 
+                re.finditer(i, string_answer)])
     try:
         proportion_c_exec_o_number_of_i_instances = \
             round(c_exec_o_number_of_i_instances/c_exec_o_answer_length_sum, 4)
     except ZeroDivisionError:
         proportion_c_exec_o_number_of_i_instances = 0
-    # for answer in c_financ_o_answer_list:
-    #     string_answer = (' ').join(answer)
-    #     if i.search(string_answer):
-            
+    for answer in c_financ_o_answer_list:
+        string_answer = (' ').join(answer)
+        if i.search(string_answer):
+            c_financ_o_number_of_i_instances += len([m.start() for m in 
+                re.finditer(i, string_answer)])
+        proportion_c_financ_o_number_of_i_instances = \
+            round(c_financ_o_number_of_i_instances/
+                c_financ_o_answer_length_sum, 4)
+
 
     template = 'index.html'
     context = {
@@ -358,7 +364,8 @@ def search (request):
             c_exec_o_proportion_refs_to_value_creation, 4),
         "cFo_value_creation": round(
             c_financ_o_proportion_refs_to_value_creation, 4),
-        "cEo_I": proportion_c_exec_o_number_of_i_instances
+        "cEo_I": proportion_c_exec_o_number_of_i_instances,
+        "cFo_I": proportion_c_financ_o_number_of_i_instances
         }
 
     return render(request, template, context)
