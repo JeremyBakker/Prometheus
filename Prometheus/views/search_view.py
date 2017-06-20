@@ -346,7 +346,7 @@ def search (request):
     i = re.compile("I[ ']")
     we = re.compile("WE[ ']")
     indefinite = re.compile(
-        '[(ANY)(EVERY)(SOME)(NO)]+ ?[(BODY)(ONE)(THING)]+ |EACH |N?EITHER')
+        '([ANY]{3}|[EVERY]{5}|[SOME]{4}|[NO]{2})([BODY]{4}|[ONE]{3}|[THING]{5}) |EACH |N?EITHER')
     #CEO
     for answer in c_exec_o_answer_list:
         string_answer = (' ').join(answer)
@@ -357,8 +357,10 @@ def search (request):
             c_exec_o_number_of_we_instances += len([m.start() for m in 
                 re.finditer(we, string_answer)])
         if indefinite.search(string_answer):
+            print(string_answer)
             c_exec_o_number_of_indefinite_instances += len([m.start() for m in 
                 re.finditer(indefinite, string_answer)])
+            print(c_exec_o_number_of_indefinite_instances)
     try:
         proportion_c_exec_o_number_of_i_instances = \
             round(c_exec_o_number_of_i_instances/c_exec_o_answer_length_sum, 4)
