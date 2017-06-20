@@ -113,6 +113,8 @@ def search (request):
     c_financ_o_trigram_refs_to_shareholders_value = 0
     c_exec_o_bigram_refs_to_value_creation = 0
     c_financ_o_bigram_refs_to_value_creation = 0
+    c_exec_o_number_of_indefinite_instances = 0
+    c_financ_o_number_of_indefinite_instances = 0
 
     # For each answer, we determine whether it correlates to the CEO or 
     # CFO. Then, after tokenizing the text, removing punctuation, and 
@@ -336,22 +338,27 @@ def search (request):
         c_financ_o_bigram_refs_to_value_creation / \
         len(c_financ_o_answer_list)
 
-    # First Person Pronouns
+    # Pronouns
     c_exec_o_number_of_i_instances = 0
     c_financ_o_number_of_i_instances = 0
     c_exec_o_number_of_we_instances = 0
     c_financ_o_number_of_we_instances = 0
-    i = re.compile('I ')
-    we = re.compile('WE ')
-        #CEO
+    i = re.compile("I[ ']")
+    we = re.compile("WE[ ']")
+    indefinite = re.compile(
+        '[(ANY)(EVERY)(SOME)(NO)]+ ?[(BODY)(ONE)(THING)]+ |EACH |N?EITHER')
+    #CEO
     for answer in c_exec_o_answer_list:
         string_answer = (' ').join(answer)
         if i.search(string_answer):
             c_exec_o_number_of_i_instances += len([m.start() for m in 
                 re.finditer(i, string_answer)])
-        elif we.search(string_answer):
+        if we.search(string_answer):
             c_exec_o_number_of_we_instances += len([m.start() for m in 
                 re.finditer(we, string_answer)])
+        if indefinite.search(string_answer):
+            c_exec_o_number_of_indefinite_instances += len([m.start() for m in 
+                re.finditer(indefinite, string_answer)])
     try:
         proportion_c_exec_o_number_of_i_instances = \
             round(c_exec_o_number_of_i_instances/c_exec_o_answer_length_sum, 4)
@@ -362,22 +369,31 @@ def search (request):
             round(c_exec_o_number_of_we_instances/c_exec_o_answer_length_sum, 4)
     except ZeroDivisionError:
         proportion_c_exec_o_number_of_we_instances = 0
-        #CFO
+    try: 
+        proportion_c_exec_o_number_of_indefinite_instances = \
+            round(c_exec_o_number_of_indefinite_instances/c_exec_o_answer_length_sum, 4)
+    except ZeroDivisionError:
+        proportion_c_exec_o_number_of_indefinite_instances = 0
+    #CFO
     for answer in c_financ_o_answer_list:
         string_answer = (' ').join(answer)
         if i.search(string_answer):
-            print("I")
             c_financ_o_number_of_i_instances += len([m.start() for m in 
                 re.finditer(i, string_answer)])
         if we.search(string_answer):
-            print("WE!")
             c_financ_o_number_of_we_instances += len([m.start() for m in 
                 re.finditer(we, string_answer)])
+        if indefinite.search(string_answer):
+            c_financ_o_number_of_indefinite_instances += len([m.start() for m in 
+                re.finditer(indefinite, string_answer)])
         proportion_c_financ_o_number_of_i_instances = \
             round(c_financ_o_number_of_i_instances/
                 c_financ_o_answer_length_sum, 4)
         proportion_c_financ_o_number_of_we_instances = \
             round(c_financ_o_number_of_we_instances/
+                c_financ_o_answer_length_sum, 4)
+        proportion_c_financ_o_number_of_indefinite_instances = \
+            round(c_financ_o_number_of_indefinite_instances/
                 c_financ_o_answer_length_sum, 4)
 
 
@@ -409,7 +425,9 @@ def search (request):
         "cEo_I": proportion_c_exec_o_number_of_i_instances,
         "cFo_I": proportion_c_financ_o_number_of_i_instances,
         "cEo_we": proportion_c_exec_o_number_of_we_instances,
-        "cFo_we": proportion_c_financ_o_number_of_we_instances
+        "cFo_we": proportion_c_financ_o_number_of_we_instances,
+        "cEo_indef": proportion_c_exec_o_number_of_indefinite_instances,
+        "cFo_indef": proportion_c_financ_o_number_of_indefinite_instances
         }
 
     return render(request, template, context)
