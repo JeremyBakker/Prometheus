@@ -6,7 +6,7 @@ Prometheus parses PDFs of conference call transcripts into individual questions 
 
 Due to copyright restrictions, I cannot host the source data for the conference calls here.
 
-![image](https://user-images.githubusercontent.com/24864800/27188860-2b2c34e8-51b5-11e7-8731-b9ad3de15b01.png)
+![image](https://user-images.githubusercontent.com/24864800/27398536-a594a6ba-567f-11e7-856a-4c86e18f90c2.png)
 
 ![image](https://user-images.githubusercontent.com/24864800/27188677-8e3f7dca-51b4-11e7-93d4-5e4340574c4e.png)
 
