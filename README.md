@@ -13,10 +13,8 @@ Due to copyright restrictions, I cannot host the source data for the conference 
 ## Table of Contents
 
 - [Background](#background)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
 - [Usage](#usage)
-- [Maintainers](#maintainers)
+- [Maintainer](#maintainer)
 - [Contribute](#contribute)
 - [License](#license)
 
@@ -24,18 +22,11 @@ Due to copyright restrictions, I cannot host the source data for the conference 
 
 Inspired by James W. Pennebaker's [_The Secret Life of Pronouns: What Our Words Say About Us_](https://www.amazon.com/Secret-Life-Pronouns-Words-About/dp/1608194965), I want to determine what linguistic data can predict about a company's value in the US stock market following quarterly conference calls. Prometheus will quantify CEO and CFO patterns of speech in concert with its display of earnings data over time.
 
-
-## Prerequisites
-
-COMING SOON. . .
-
-## Installation of Prometheus
-
-COMING SOON. . .
-
 ## Usage
 
 COMING SOON. . .
+
+I am working to find a way to host the application in a way that respects the copyright restrictions of the conference call data.
 
 ## Maintainer
 
