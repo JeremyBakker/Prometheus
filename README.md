@@ -26,7 +26,7 @@ Inspired by James W. Pennebaker's [_The Secret Life of Pronouns: What Our Words 
 
 COMING SOON. . .
 
-I am working to find a way to host the application in a way that respects the copyright restrictions of the conference call data.
+I am working to determine how to host the application in a way that respects the copyright restrictions of the conference call data.
 
 ## Maintainer
 
